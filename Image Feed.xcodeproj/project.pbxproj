@@ -76,9 +76,9 @@
 		7D9CFA5A28DDF66900D971A7 /* ImagesList */ = {
 			isa = PBXGroup;
 			children = (
+				C90D93CB2C8787A40001B9BB /* ProfileViewController.swift */,
 				7D3DFB1328DDF696005A13F3 /* ImagesListCell.swift */,
 				7D3DFB1428DDF696005A13F3 /* ImagesListViewController.swift */,
-				C90D93CB2C8787A40001B9BB /* ProfileViewController.swift */,
 				C9ECFAE32C8A3A97000F7A41 /* SingleImageViewController.swift */,
 			);
 			path = ImagesList;
