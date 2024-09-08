@@ -119,6 +119,9 @@
                                 </subviews>
                                 <viewLayoutGuide key="contentLayoutGuide" id="TPk-GK-jV6"/>
                                 <viewLayoutGuide key="frameLayoutGuide" id="zLc-wx-dcv"/>
+                                <connections>
+                                    <outlet property="delegate" destination="n07-U0-Stv" id="PQZ-zp-SDC"/>
+                                </connections>
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aSl-GQ-yti">
                                 <rect key="frame" x="8" y="11" width="48" height="48"/>
@@ -132,6 +135,18 @@
                                     <action selector="didTapBackButton" destination="n07-U0-Stv" eventType="touchUpInside" id="JG9-Fj-POa"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lfj-cM-9hL" userLabel="ShareButton">
+                                <rect key="frame" x="171" y="751" width="51" height="51"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="51" id="9y4-zx-n0q"/>
+                                    <constraint firstAttribute="width" constant="51" id="c3q-0x-Cow"/>
+                                </constraints>
+                                <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                                <state key="normal" image="share_button"/>
+                                <connections>
+                                    <action selector="didTapShareButton:" destination="n07-U0-Stv" eventType="touchUpInside" id="iZC-gS-Fkf"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="ebN-mW-dxO"/>
                         <color key="backgroundColor" name="background"/>
@@ -139,6 +154,8 @@
                             <constraint firstItem="nly-Er-3qI" firstAttribute="bottom" secondItem="1Jj-Fo-y9P" secondAttribute="bottom" id="C7y-wZ-d4s"/>
                             <constraint firstItem="aSl-GQ-yti" firstAttribute="leading" secondItem="ebN-mW-dxO" secondAttribute="leading" constant="8" id="EN7-Em-YGj"/>
                             <constraint firstItem="ebN-mW-dxO" firstAttribute="leading" secondItem="nly-Er-3qI" secondAttribute="leading" id="P2r-Lz-4Sd"/>
+                            <constraint firstItem="ebN-mW-dxO" firstAttribute="bottom" secondItem="lfj-cM-9hL" secondAttribute="bottom" constant="50" id="Pb9-Pg-ELk"/>
+                            <constraint firstItem="lfj-cM-9hL" firstAttribute="centerX" secondItem="ebN-mW-dxO" secondAttribute="centerX" id="QXq-ez-MFg"/>
                             <constraint firstItem="aSl-GQ-yti" firstAttribute="top" secondItem="ebN-mW-dxO" secondAttribute="top" constant="11" id="W9d-nr-zkA"/>
                             <constraint firstItem="nly-Er-3qI" firstAttribute="trailing" secondItem="ebN-mW-dxO" secondAttribute="trailing" id="eFH-gd-kTC"/>
                             <constraint firstAttribute="top" secondItem="nly-Er-3qI" secondAttribute="top" id="oLZ-Ft-wUN"/>
@@ -146,7 +163,8 @@
                     </view>
                     <navigationItem key="navigationItem" id="wCB-hM-spI"/>
                     <connections>
-                        <outlet property="imageView" destination="0uB-xx-zmL" id="lgV-z0-hCl"/>
+                        <outlet property="imageView" destination="0uB-xx-zmL" id="7Fm-9c-U4i"/>
+                        <outlet property="scrollView" destination="nly-Er-3qI" id="J6G-yw-atg"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vox-oq-PyP" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -261,6 +279,7 @@
         <image name="backward" width="24" height="24"/>
         <image name="like_button_on" width="42" height="42"/>
         <image name="log_out_button" width="16" height="16"/>
+        <image name="share_button" width="50" height="50"/>
         <image name="tab_editorial_active" width="30" height="30"/>
         <image name="tab_profile_active" width="30" height="30"/>
         <namedColor name="#AEAFB4">
