@@ -35,7 +35,7 @@ final class ProfileViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "@ekaterina_nov"
         label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
-        label.textColor = UIColor(named: "#AEAFB4")
+        label.textColor = UIColor(named: "YPGray")
         return label
     } ()
     
@@ -52,7 +52,7 @@ final class ProfileViewController: UIViewController {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "log_out_button"), for: .normal)
-        button.tintColor = UIColor(named: "#F56B6C")
+        button.tintColor = UIColor(named: "YPRed")
         return button
     } ()
     
