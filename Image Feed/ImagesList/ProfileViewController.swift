@@ -34,7 +34,7 @@ final class ProfileViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "@ekaterina_nov"
-        label.font = UIFont.systemFont(ofSize: 16, weight: .regular)
+        label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         label.textColor = UIColor(named: "#AEAFB4")
         return label
     } ()
@@ -43,7 +43,7 @@ final class ProfileViewController: UIViewController {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "Hello, world!"
-        label.font = UIFont.systemFont(ofSize: 18, weight: .regular)
+        label.font = UIFont.systemFont(ofSize: 13, weight: .regular)
         label.textColor = UIColor(named: "YPWhite")
         return label
     } ()
@@ -52,7 +52,7 @@ final class ProfileViewController: UIViewController {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(named: "log_out_button"), for: .normal)
-        button.tintColor = .red
+        button.tintColor = UIColor(named: "#F56B6C")
         return button
     } ()
     
@@ -109,8 +109,8 @@ final class ProfileViewController: UIViewController {
         NSLayoutConstraint.activate([
             exitButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
             exitButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 55),
-            exitButton.widthAnchor.constraint(equalToConstant: (22)),
-            exitButton.heightAnchor.constraint(equalToConstant:(24))
+            exitButton.widthAnchor.constraint(equalToConstant: (24)),
+            exitButton.heightAnchor.constraint(equalToConstant: (24))
         ])
     }
     // MARK: - Actions
