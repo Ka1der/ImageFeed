@@ -10,7 +10,7 @@ import UIKit
 final class SingleImageViewController: UIViewController {
     
     // MARK: - Properties
-    
+
     var image: UIImage? {
         
         didSet {
@@ -60,7 +60,16 @@ final class SingleImageViewController: UIViewController {
             let maxZoomScale = scrollView.maximumZoomScale
             view.layoutIfNeeded()
             let visibleRectSize = scrollView.bounds.size
-            let imageSize = image.size
+            var imageSize = image.size
+            
+            if imageSize.width == 0 {
+                imageSize.width = 1
+            }
+            
+            if imageSize.height == 0 {
+                imageSize.height = 1
+            }
+            
             let hScale = visibleRectSize.width / imageSize.width
             let vScale = visibleRectSize.height / imageSize.height
             let scale = min(maxZoomScale, max(minZoomScale, min(hScale, vScale)))
