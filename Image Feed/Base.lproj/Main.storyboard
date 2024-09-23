@@ -263,10 +263,10 @@
                                 </wkWebViewConfiguration>
                             </wkWebView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="mDs-g7-ERt" userLabel="nav_back_button">
-                                <rect key="frame" x="9" y="11" width="48" height="48"/>
+                                <rect key="frame" x="0.0" y="0.0" width="64" height="44"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="48" id="EoW-ZO-kDc"/>
-                                    <constraint firstAttribute="height" constant="48" id="wWP-Ux-JBr"/>
+                                    <constraint firstAttribute="width" constant="64" id="EoW-ZO-kDc"/>
+                                    <constraint firstAttribute="height" constant="44" id="wWP-Ux-JBr"/>
                                 </constraints>
                                 <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
                                 <state key="normal" image="nav_back_button"/>
@@ -274,20 +274,28 @@
                                     <action selector="didTapBackButton:" destination="clZ-Qc-nG1" eventType="touchUpInside" id="1np-la-bzm"/>
                                 </connections>
                             </button>
+                            <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="U9T-O6-d7N">
+                                <rect key="frame" x="0.0" y="40" width="393" height="4"/>
+                                <color key="progressTintColor" name="YPBlack"/>
+                            </progressView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="487-4C-jy3"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                         <constraints>
+                            <constraint firstItem="U9T-O6-d7N" firstAttribute="leading" secondItem="487-4C-jy3" secondAttribute="leading" id="20Y-Kc-19s"/>
                             <constraint firstItem="ocN-EQ-47I" firstAttribute="top" secondItem="487-4C-jy3" secondAttribute="top" constant="87" id="2P8-5J-Fsm"/>
-                            <constraint firstItem="mDs-g7-ERt" firstAttribute="leading" secondItem="487-4C-jy3" secondAttribute="leading" constant="9" id="5YP-Lb-zRB"/>
+                            <constraint firstItem="mDs-g7-ERt" firstAttribute="leading" secondItem="487-4C-jy3" secondAttribute="leading" id="5YP-Lb-zRB"/>
+                            <constraint firstItem="U9T-O6-d7N" firstAttribute="top" secondItem="487-4C-jy3" secondAttribute="top" constant="40" id="6i0-kG-IdV"/>
                             <constraint firstItem="487-4C-jy3" firstAttribute="trailing" secondItem="ocN-EQ-47I" secondAttribute="trailing" id="CRj-J0-AbS"/>
                             <constraint firstItem="487-4C-jy3" firstAttribute="bottom" secondItem="ocN-EQ-47I" secondAttribute="bottom" constant="76" id="DtB-eX-fKu"/>
-                            <constraint firstItem="mDs-g7-ERt" firstAttribute="top" secondItem="487-4C-jy3" secondAttribute="top" constant="11" id="Ufv-l5-DaW"/>
+                            <constraint firstItem="mDs-g7-ERt" firstAttribute="top" secondItem="487-4C-jy3" secondAttribute="top" id="Ufv-l5-DaW"/>
+                            <constraint firstItem="487-4C-jy3" firstAttribute="trailing" secondItem="U9T-O6-d7N" secondAttribute="trailing" id="WmU-1q-TGp"/>
                             <constraint firstItem="ocN-EQ-47I" firstAttribute="leading" secondItem="487-4C-jy3" secondAttribute="leading" id="fPC-vJ-27K"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="r2W-Ve-dCo"/>
                     <connections>
+                        <outlet property="UIProgressView" destination="U9T-O6-d7N" id="J0i-fj-yiB"/>
                         <outlet property="webView" destination="ocN-EQ-47I" id="zzo-oL-TFZ"/>
                     </connections>
                 </viewController>
