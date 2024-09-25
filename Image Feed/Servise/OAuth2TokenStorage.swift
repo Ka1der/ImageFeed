@@ -8,22 +8,21 @@
 import Foundation
 
 final class OAuth2TokenStorage {
-    private let tokenKey = "OAuth2AccessToken"
     
+    // Хранение токена
     var token: String? {
         get {
-            // Извлечение токена из UserDefaults
-            return UserDefaults.standard.string(forKey: tokenKey)
+            storage.string(forKey: Keys.token.rawValue)
         }
         set {
-            // Сохранение токена в UserDefaults
-            UserDefaults.standard.setValue(newValue, forKey: tokenKey)
+            storage.set(newValue, forKey: Keys.token.rawValue)
         }
     }
     
-    // Метод для удаления токена
-    func removeToken() {
-        UserDefaults.standard.removeObject(forKey: tokenKey)
+    private let storage: UserDefaults = .standard
+    
+    private enum Keys: String {
+        case token
     }
 }
 

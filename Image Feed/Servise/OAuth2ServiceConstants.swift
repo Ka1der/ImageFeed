@@ -6,3 +6,9 @@
 //
 
 import Foundation
+
+//Хранилище констант для сервиса OAuth2Service
+
+enum OAuth2ServiceConstants {
+    static let unsplashGetTokenURLString = "https://unsplash.com/oauth/token"
+}
