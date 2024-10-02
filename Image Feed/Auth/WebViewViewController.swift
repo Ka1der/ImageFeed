@@ -7,31 +7,35 @@
 import WebKit
 import UIKit
 
-fileprivate let UnsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
-
-
 final class WebViewViewController: UIViewController {
+    
     @IBOutlet var webView: WKWebView!
     @IBOutlet var UIProgressView: UIProgressView!
     
     weak var delegate: WebViewViewControllerDelegate?
     
+    private enum WebViewConstants {
+        static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         webView.navigationDelegate = self
         
-        var urlComponents = URLComponents(string: UnsplashAuthorizeURLString)!
+        var urlComponents = URLComponents(string: WebViewConstants.unsplashAuthorizeURLString)!
         urlComponents.queryItems = [
             URLQueryItem(name: "client_id", value: Constants.AccessKey),
             URLQueryItem(name: "redirect_uri", value: Constants.RedirectURI),
             URLQueryItem(name: "response_type", value: "code"),
             URLQueryItem(name: "scope", value: Constants.AccessScope)
         ]
-        let url = urlComponents.url!
+        
+        guard let url = urlComponents.url else {
+            return
+        }
         
         let request = URLRequest(url: url)
         webView.load(request)
-        
         updateProgress()
     }
     
@@ -76,7 +80,7 @@ extension WebViewViewController: WKNavigationDelegate {
         decisionHandler: @escaping (WKNavigationActionPolicy) -> Void
     ) {
         if let code = code(from: navigationAction) {
-            //TODO: pocess code
+            delegate?.webViewViewController(self, didAuthenticateWithCode: code)
             decisionHandler(.cancel)
         } else {
             decisionHandler(.allow)
@@ -87,7 +91,7 @@ extension WebViewViewController: WKNavigationDelegate {
         if
             let url = navigationAction.request.url,
             let urlComponents = URLComponents(string: url.absoluteString),
-            urlComponents.path == "/oauth/autorize/native",
+            urlComponents.path == "/oauth/authorize/native",
             let items = urlComponents.queryItems,
             let codeItem = items.first(where: { $0.name == "code"})
         {

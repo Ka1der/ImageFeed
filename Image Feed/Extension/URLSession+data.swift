@@ -13,7 +13,7 @@ enum NetworkError: Error {
     case urlSessionError
 }
 
-// Обработка HTTP-статуса и ошибок
+// MARK: -  Обработка HTTP-статуса и ошибок
 extension URLSession {
     func data(
         for request: URLRequest,

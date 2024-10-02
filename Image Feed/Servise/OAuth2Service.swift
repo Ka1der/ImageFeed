@@ -40,6 +40,7 @@ final class OAuth2Service {
     
     // Получение токена от сервера по переданному авторизационному коду
     func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, any Error>) -> Void) {
+       
         let request = makeOAuthTokenRequest(code: code)
         let task = urlSession.data(for: request) { [weak self] result in
             guard let self else { preconditionFailure("Self is nil")
