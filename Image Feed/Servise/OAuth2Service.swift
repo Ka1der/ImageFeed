@@ -9,6 +9,15 @@ import Foundation
 
 final class OAuth2Service {
     
+    var authToken: String? {
+        get {
+            OAuth2TokenStorage().token
+        }
+        set {
+            OAuth2TokenStorage().token = newValue
+        }
+    }
+    
     static let shared = OAuth2Service()
     private let urlSession = URLSession.shared
     
@@ -53,6 +62,8 @@ final class OAuth2Service {
                     let OAuthTokenResponseBody = try decoder.decode(OAuthTokenResponseBody.self, from: data)
                     print(OAuthTokenResponseBody)
                     print(OAuthTokenResponseBody.accessToken)
+                    self.authToken = OAuthTokenResponseBody.accessToken
+                    completion(.success(OAuthTokenResponseBody.accessToken))
                 } catch {
                     completion(.failure(error))
                 }

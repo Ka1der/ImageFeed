@@ -9,15 +9,18 @@ import UIKit
 
 final class WebViewViewController: UIViewController {
     
+    // MARK: - IBOutlets
     @IBOutlet var webView: WKWebView!
     @IBOutlet var UIProgressView: UIProgressView!
     
+    // MARK: - Properties
     weak var delegate: WebViewViewControllerDelegate?
     
     private enum WebViewConstants {
         static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
     }
     
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         webView.navigationDelegate = self
@@ -39,6 +42,7 @@ final class WebViewViewController: UIViewController {
         updateProgress()
     }
     
+    // MARK: - IBActions
     @IBAction func didTapBackButton(_ sender: Any?) {
         delegate?.webViewViewControllerDidCancel(self)
     }
@@ -59,6 +63,7 @@ final class WebViewViewController: UIViewController {
         webView.removeObserver(self, forKeyPath: #keyPath(WKWebView.estimatedProgress), context: nil)
     }
     
+    // MARK: - KVO
     override func observeValue(forKeyPath keyPath: String?, of object: Any?, change: [NSKeyValueChangeKey : Any]?, context: UnsafeMutableRawPointer?) {
         if keyPath == #keyPath(WKWebView.estimatedProgress) {
             updateProgress()
@@ -73,6 +78,7 @@ final class WebViewViewController: UIViewController {
     }
 }
 
+// MARK: - WKNavigationDelegate
 extension WebViewViewController: WKNavigationDelegate {
     func webView(
         _ webView: WKWebView,

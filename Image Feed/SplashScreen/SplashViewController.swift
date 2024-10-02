@@ -90,7 +90,7 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
     
     private func fetchOAuthToken(_ code: String) {
         oauth2Service.fetchOAuthToken(code) { [weak self] result in
-            guard let self = self else { preconditionFailure("Weak self error") }
+            guard let self else { preconditionFailure("Weak self error") }
             switch result {
             case .success:
                 self.switchToTabBarController()
