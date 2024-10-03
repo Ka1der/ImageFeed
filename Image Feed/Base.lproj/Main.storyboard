@@ -214,7 +214,7 @@
                         </constraints>
                     </view>
                     <connections>
-                        <segue destination="tbh-Ug-ZDH" kind="presentation" identifier="ShowAuthenticationScreen" id="3IU-en-tyl"/>
+                        <segue destination="tbh-Ug-ZDH" kind="presentation" identifier="ShowAuthenticationScreen" modalPresentationStyle="fullScreen" id="3IU-en-tyl"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="e4s-8W-qap" userLabel="First Responder" customClass="UIResponder" sceneMemberID="firstResponder"/>
@@ -226,11 +226,11 @@
             <objects>
                 <viewController id="CZO-PN-P0t" customClass="AuthViewController" customModule="Image_Feed" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="DV7-Ss-kLy">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="842"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kmu-MO-KRn">
-                                <rect key="frame" x="25" y="652" width="343" height="48"/>
+                                <rect key="frame" x="25" y="640" width="343" height="48"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="OIw-Ru-eS8"/>
                                     <constraint firstAttribute="width" constant="343" id="UGs-2p-lq0"/>
@@ -252,7 +252,7 @@
                                 </connections>
                             </button>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="auth_screen_logo" translatesAutoresizingMaskIntoConstraints="NO" id="XoX-Ln-sXK">
-                                <rect key="frame" x="166.66666666666666" y="292" width="60" height="60"/>
+                                <rect key="frame" x="166.66666666666666" y="280" width="60" height="60"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="60" id="sby-1g-PRd"/>
                                     <constraint firstAttribute="height" constant="60" id="uU8-rY-lyf"/>
@@ -364,7 +364,7 @@
                     <toolbarItems/>
                     <navigationItem key="navigationItem" id="MKg-UQ-Ffx"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="c0T-B2-UdG">
-                        <rect key="frame" x="0.0" y="0.0" width="393" height="56"/>
+                        <rect key="frame" x="0.0" y="0.0" width="393" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
