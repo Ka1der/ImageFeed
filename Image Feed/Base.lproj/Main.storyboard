@@ -199,7 +199,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="splash_screen_logo" translatesAutoresizingMaskIntoConstraints="NO" id="FYE-D3-uBN">
-                                <rect key="frame" x="160.66666666666666" y="272" width="72" height="75"/>
+                                <rect key="frame" x="160.66666666666666" y="401" width="72" height="75"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="72" id="a27-NG-czU"/>
                                     <constraint firstAttribute="height" constant="75" id="zkf-NO-UEl"/>
@@ -209,8 +209,8 @@
                         <viewLayoutGuide key="safeArea" id="G6P-wI-8Y2"/>
                         <color key="backgroundColor" name="YPBlack"/>
                         <constraints>
-                            <constraint firstItem="FYE-D3-uBN" firstAttribute="top" secondItem="cOw-av-M3u" secondAttribute="top" constant="272" id="39y-zf-cje"/>
-                            <constraint firstItem="FYE-D3-uBN" firstAttribute="centerX" secondItem="G6P-wI-8Y2" secondAttribute="centerX" id="i4B-gF-MEx"/>
+                            <constraint firstItem="FYE-D3-uBN" firstAttribute="centerX" secondItem="G6P-wI-8Y2" secondAttribute="centerX" id="NWw-VY-VFQ"/>
+                            <constraint firstItem="FYE-D3-uBN" firstAttribute="centerY" secondItem="G6P-wI-8Y2" secondAttribute="centerY" id="zk3-mF-OUP"/>
                         </constraints>
                     </view>
                     <connections>
