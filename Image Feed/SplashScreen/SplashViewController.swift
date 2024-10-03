@@ -37,8 +37,10 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
         super.viewDidAppear(animated)
         
         if storage.token != nil {
+            print("Token exists, switching to TabBarController") // Лог ошибок
             switchToTabBarController()
         } else {
+            print("Token not found, performing segue to authentication screen") // Лог ошибок
             performSegue(withIdentifier: SplashViewControllerConstants.showAuthenticationScreenSegueIdentifier, sender: nil)
         }
     }
@@ -55,9 +57,8 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
                 assertionFailure("Failed to prepare for \(SplashViewControllerConstants.showAuthenticationScreenSegueIdentifier)")
                 return
             }
-            
+            print("Preparing for segue to AuthViewController") // Лог ошибок
             viewController.delegate = self
-            
         } else {
             super.prepare(for: segue, sender: sender)
         }
@@ -66,9 +67,12 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
     // MARK: - AuthViewControllerDelegate
     
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
-        print("Authenticated with code in SplashViewController: \(code)") // Debug message
+        print("Authenticated with code in SplashViewController: \(code)") // Лог ошибок
         dismiss(animated: true) { [weak self] in
-            guard let self = self else { return }
+            guard let self = self else {
+                print("SplashViewController: Self is nil") // Лог ошибок
+                return
+            }
             self.fetchOAuthToken(code)
         }
     }
@@ -85,17 +89,21 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
         let tabBarController = UIStoryboard(name: "Main", bundle: .main)
             .instantiateViewController(withIdentifier: "TabBarViewController")
         // Установим в `rootViewController` полученный контроллер
+        print("Switching to TabBarController") // Лог ошибок
         window.rootViewController = tabBarController
     }
     
     private func fetchOAuthToken(_ code: String) {
+        print("Fetching OAuth token with code: \(code)") // Лог ошибок
         oauth2Service.fetchOAuthToken(code) { [weak self] result in
-            guard let self else { preconditionFailure("Weak self error") }
+            guard let self else {
+                print("SplashViewController: Self is nil") // Лог ошибок
+                preconditionFailure("Weak self error") }
             switch result {
             case .success:
                 self.switchToTabBarController()
             case .failure(let error):
-                print("fetch token error \(error)")
+                print("fetch token error \(error)") // Лог ошибок
             }
         }
     }
