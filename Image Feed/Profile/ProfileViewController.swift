@@ -114,6 +114,7 @@ final class ProfileViewController: UIViewController {
         ])
     }
     // MARK: - Actions
+    
     @objc private func didTapLogOutButton() {
         let alertController = UIAlertController(
             title: "Пока, пока!",
