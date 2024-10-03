@@ -50,7 +50,7 @@ final class OAuth2Service {
         // Создание URLRequest
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        print(request)
+        print("OAuth2Service:\(request)")
         return request
     }
     
@@ -61,7 +61,9 @@ final class OAuth2Service {
        
         let request = makeOAuthTokenRequest(code: code)
         let task = urlSession.data(for: request) { [weak self] result in
-            guard let self else { preconditionFailure("Self is nil")
+            guard let self else {
+                print("OAuth2Service: Self is nil")
+                preconditionFailure("Self is nil")
             }
             
             // Обработка результата запроса
@@ -69,14 +71,17 @@ final class OAuth2Service {
             case .success(let data):
                 do {
                     let OAuthTokenResponseBody = try decoder.decode(OAuthTokenResponseBody.self, from: data)
+                    print("OAuth2Service:\(OAuthTokenResponseBody)")
                     print(OAuthTokenResponseBody)
                     print(OAuthTokenResponseBody.accessToken)
                     self.authToken = OAuthTokenResponseBody.accessToken
                     completion(.success(OAuthTokenResponseBody.accessToken))
                 } catch {
+                    print("OAuth2Service: Decoding error: \(error.localizedDescription)")
                     completion(.failure(error))
                 }
             case .failure(let error):
+                print("OAuth2Service:\(error.localizedDescription)")
                 completion(.failure(error))
             }
         }
