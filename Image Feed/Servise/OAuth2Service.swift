@@ -9,6 +9,8 @@ import Foundation
 
 final class OAuth2Service {
     
+    // MARK: - Properties
+    
     var authToken: String? {
         get {
             OAuth2TokenStorage().token
@@ -20,8 +22,13 @@ final class OAuth2Service {
     
     static let shared = OAuth2Service()
     private let urlSession = URLSession.shared
-    
     private let decoder = JSONDecoder()
+    
+    // MARK: - Initializers
+    
+    private init() {}
+    
+    // MARK: - OAuth Token Request
     
     // Создание URLRequest для получение токена
     func makeOAuthTokenRequest(code: String) -> URLRequest {
@@ -46,6 +53,8 @@ final class OAuth2Service {
         print(request)
         return request
     }
+    
+    // MARK: - Fetch OAuth Token
     
     // Получение токена от сервера по переданному авторизационному коду
     func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, any Error>) -> Void) {
