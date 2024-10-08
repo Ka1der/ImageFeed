@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import ProgressHUD
 
 protocol AuthViewControllerDelegate: AnyObject {
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String)
@@ -35,7 +36,9 @@ final class AuthViewController: UIViewController, WebViewViewControllerDelegate 
     }
     
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
+        ProgressHUD.animate()
         delegate?.authViewController(self, didAuthenticateWithCode: code)
+        ProgressHUD.dismiss()
     }
     func webViewViewControllerDidCancel(_ vc: WebViewViewController) {
         dismiss(animated: true)
