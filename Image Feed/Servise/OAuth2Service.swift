@@ -7,6 +7,11 @@
 
 import Foundation
 
+enum AuthServiceError: Error {
+    case invalidRequest
+    case noData
+}
+
 final class OAuth2Service {
     
     // MARK: - Properties
@@ -24,6 +29,9 @@ final class OAuth2Service {
     private let urlSession = URLSession.shared
     private let decoder = JSONDecoder()
     
+    private var task: URLSessionTask?
+    private var lastCode: String?
+    
     // MARK: - Initializers
     
     private init() {}
@@ -31,26 +39,14 @@ final class OAuth2Service {
     // MARK: - OAuth Token Request
     
     // Создание URLRequest для получение токена
-    func makeOAuthTokenRequest(code: String) -> URLRequest {
-        guard var urlComponents = URLComponents(string: OAuth2ServiceConstants.unsplashGetTokenURLString) else {
-            preconditionFailure("Invalid URL")
+    func makeOAuthTokenRequest(code: String) -> URLRequest? {
+        
+        guard let url = URL(string: "...\(code)") else {
+            assertionFailure("Failed to create URL")
+            return nil
         }
-        // Параметры запроса
-        urlComponents.queryItems = [
-            URLQueryItem(name: "client_id", value: Constants.accessKey),
-            URLQueryItem(name: "client_secret", value: Constants.secretKey),
-            URLQueryItem(name: "redirect_uri", value: Constants.redirectURI),
-            URLQueryItem(name: "code", value: code),
-            URLQueryItem(name: "grant_type", value: "authorization_code")
-        ]
-        // Проверка URL после добавления параметров
-        guard let url = urlComponents.url else {
-            preconditionFailure("Invalid URL")
-        }
-        // Создание URLRequest
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
-        print("OAuth2Service:\(request)") // Лог ошибок
         return request
     }
     
@@ -58,33 +54,58 @@ final class OAuth2Service {
     
     // Получение токена от сервера по переданному авторизационному коду
     func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, any Error>) -> Void) {
-       
-        let request = makeOAuthTokenRequest(code: code)
-        let task = urlSession.data(for: request) { [weak self] result in
-            guard let self else {
-                print("OAuth2Service: Self is nil") // Лог ошибок
-                preconditionFailure("Self is nil")
-            }
-            
-            // Обработка результата запроса
-            switch result {
-            case .success(let data):
+        assert(Thread.isMainThread)
+        
+        guard lastCode != code else {
+            completion(.failure(AuthServiceError.invalidRequest))
+            return
+        }
+        
+        task?.cancel()
+        lastCode = code
+        
+        guard let request = makeOAuthTokenRequest(code: code) else {
+            completion(.failure(AuthServiceError.invalidRequest))
+            return
+        }
+        
+        let task = urlSession.dataTask(with: request) { [weak self] data, response, error in
+            DispatchQueue.main.async {
+                
+                // Обработка результата запроса
+                defer {
+                    self?.task = nil
+                    self?.lastCode = nil
+                }
+                
+                if let error = error {
+                    print("OAuth2Service: \(error.localizedDescription)")
+                    completion(.failure(error))
+                    return
+                }
+                
+                guard let data = data else {
+                    completion(.failure(AuthServiceError.noData))
+                    return
+                }
+                
                 do {
-                    let OAuthTokenResponseBody = try decoder.decode(OAuthTokenResponseBody.self, from: data)
-                    print("OAuth2Service:\(OAuthTokenResponseBody)")
-                    print(OAuthTokenResponseBody)
-                    print(OAuthTokenResponseBody.accessToken)
-                    self.authToken = OAuthTokenResponseBody.accessToken
-                    completion(.success(OAuthTokenResponseBody.accessToken))
+                    guard let self = self else {
+                        completion(.failure(AuthServiceError.invalidRequest))
+                        return
+                    }
+                    let oAuthTokenResponseBody = try self.decoder.decode(OAuthTokenResponseBody.self, from: data)
+                    print("OAuth2Service: \(oAuthTokenResponseBody)")
+                    print(oAuthTokenResponseBody)
+                    print(oAuthTokenResponseBody.accessToken)
+                    self.authToken = oAuthTokenResponseBody.accessToken
+                    completion(.success(oAuthTokenResponseBody.accessToken))
                 } catch {
-                    print("OAuth2Service: Decoding error: \(error.localizedDescription)") // Лог ошибок
+                    print("OAuth2Service: Decoding error: \(error.localizedDescription)")
                     completion(.failure(error))
                 }
-            case .failure(let error):
-                print("OAuth2Service:\(error.localizedDescription)") // Лог ошибок
-                completion(.failure(error))
             }
         }
-        task.resume()
     }
 }
+ 
