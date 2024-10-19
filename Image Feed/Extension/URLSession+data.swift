@@ -11,10 +11,12 @@ enum NetworkError: Error {
     case httpStatusCode(Int)
     case urlRequestError(Error)
     case urlSessionError
+    case noData
 }
 
 // MARK: -  Обработка HTTP-статуса и ошибок
 extension URLSession {
+    
     func data(
         for request: URLRequest,
         completion: @escaping (Result<Data, Error>) -> Void
@@ -39,6 +41,35 @@ extension URLSession {
             }
         })
         
+        return task
+    }
+    
+    // Сетевой запрос данных пользователя с декодированием
+    func objectTask<T: Decodable>(for request: URLRequest, completion: @escaping (Result<T, Error>) -> Void) -> URLSessionTask {
+        
+        let fulfillCompletionOnTheMainThread: (Result<T, Error>) -> Void = { result in // Выполнение в главном потоке
+            DispatchQueue.main.async {
+                completion(result)
+            }
+        }
+        
+        let decoder = SnakeCaseJSONDecoder() // Декодер snake_case в camelCase
+        
+        let task = data(for: request) { (result: Result<Data, Error>) in
+            switch result {
+            case .success(let data):
+                do {
+                    let response = try decoder.decode(T.self, from: data)
+                    fulfillCompletionOnTheMainThread(.success(response))
+                } catch {
+                    print("URLSession+data: Ошибка декодирования \(error.localizedDescription)") // Лог ошибок
+                    print("URLSession+data: Данные ответа \(String(data: data, encoding: .utf8) ?? "N/A")")
+                    fulfillCompletionOnTheMainThread(.failure(error))
+                } case .failure(let error):
+                print("URLSession+data: Ошибка сети \(error.localizedDescription)") // Лог ошибок
+                fulfillCompletionOnTheMainThread(.failure(error))
+            }
+        }
         return task
     }
 }

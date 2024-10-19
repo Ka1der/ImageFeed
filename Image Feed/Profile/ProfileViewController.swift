@@ -9,6 +9,8 @@ import UIKit
 
 final class ProfileViewController: UIViewController {
     
+    private let profileService = ProfileService.shared
+    
     // MARK: - UI Elements
     
     private let avatarImageView: UIImageView = {
@@ -56,6 +58,8 @@ final class ProfileViewController: UIViewController {
         return button
     } ()
     
+    private let tokenStorage = OAuth2TokenStorage()
+    
     // MARK: - Life Cycle
     
     override func viewDidLoad() {
@@ -63,6 +67,8 @@ final class ProfileViewController: UIViewController {
         setupUI()
         
         exitButton.addTarget(self, action: #selector (didTapLogOutButton), for: .touchUpInside)
+        
+        updateProfile()
     }
     
     // MARK: - Setup UI
@@ -78,6 +84,7 @@ final class ProfileViewController: UIViewController {
         view.addSubview(exitButton)
         
         setupConstraints()
+        updateProfile()
     }
     
     // MARK: - Setup Constrains
@@ -138,5 +145,45 @@ final class ProfileViewController: UIViewController {
         alertController.addAction(yesTapAction)
         alertController.addAction(noTapAction)
         present(alertController, animated: true, completion: nil)
+    }
+    
+    private func updateProfile() {
+        guard let token = tokenStorage.token else {
+            print("ProfileViewController: Токен отсутствует") // Лог ошибок
+            return
+        }
+        
+        profileService.fetchProfile(token) { [weak self] result in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let profile):
+                    self.updateUI(with: profile)
+                case .failure(let error):
+                    print("ProfileViewController: Ошибка при получении профиля - \(error.localizedDescription)") // Лог ошибок
+                }
+            }
+        }
+    }
+    
+    private func updateProfileDetalis() {
+        guard let profile = profileService.profile else {
+            print("ProfileViewController: Профиль отсутствует") // Лог ошибок
+            return
+        }
+        
+        nameLabel.text = profile.name
+        usernameLabel.text = profile.loginName
+        messageLabel.text = profile.bio
+        
+        print("ProfileViewController: UI обновлен с данными профиля") // Лог ошибок
+    }
+    
+    private func updateUI(with profile: ProfileService.Profile) {
+        nameLabel.text = profile.name
+        usernameLabel.text = profile.loginName
+        messageLabel.text = profile.bio
+        print("ProfileViewController: UI обновлен с данными профиля") // Лог ошибок
     }
 }

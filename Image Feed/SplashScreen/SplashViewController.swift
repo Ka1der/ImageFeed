@@ -13,6 +13,7 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
     
     private let oauth2Service = OAuth2Service.shared
     private let storage = OAuth2TokenStorage()
+    private let profileService = ProfileService.shared // Использование синглтона
     
     private enum SplashViewControllerConstants {
         static let showAuthenticationScreenSegueIdentifier = "ShowAuthenticationScreen"
@@ -96,16 +97,61 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
     private func fetchOAuthToken(_ code: String) {
         print("Извлечение токена OAuth с помощью кода: \(code)") // Лог ошибок
         oauth2Service.fetchOAuthToken(code) { [weak self] result in
-            guard let self else {
-                print("SplashViewController: равен нулю") // Лог ошибок
-                preconditionFailure("Weak self error") }
-            switch result {
-            case .success:
-                self.switchToTabBarController()
-            case .failure(let error):
-                print("Ошибка извлечения токена \(error)") // Лог ошибок
+            DispatchQueue.main.async {
+                UIBlockingProgressHUD.show()
+                guard let self else {
+                    print("SplashViewController: равен нулю") // Лог ошибок
+                    preconditionFailure("Weak self error") }
+                switch result {
+                case .success(let token):
+                    self.fetchProfile(token)
+                case .failure(let error):
+                    print("Ошибка извлечения токена \(error)") // Лог ошибок
+                    UIBlockingProgressHUD.dismiss()
+                }
             }
         }
+    }
+    
+    func didAuthenticate(_ vc: AuthViewController) {
+        vc.dismiss(animated: true)
+        guard let token = storage.token else {
+            return
+        }
+        fetchProfile(token)
+    }
+    
+    private func fetchProfile(_ token: String) {
+        UIBlockingProgressHUD.show()
+        profileService.fetchProfile(token) { [weak self] result in
+            UIBlockingProgressHUD.dismiss()
+            
+            guard let self = self else { return }
+            
+            switch result {
+            case .success:
+                self.switchToTabBarController() // Успешная авторизация
+                print("Авторизация прошла успешно")
+            case .failure(let error):
+                self.showAlert(with: error) // Вызов алерта ошибки
+            }
+        }
+    }
+    
+    // Алерт ошибки
+    private func showAlert(with error: Error) {
+        let alert = UIAlertController(
+            title: "Ошибка получения профиля",
+            message: error.localizedDescription,
+            preferredStyle: .alert
+        )
+        
+        // Возвращаемся к экрану авторизации
+        let okAction = UIAlertAction(title: "OK", style: .default) { [weak self] _ in
+            self?.performSegue(withIdentifier: SplashViewControllerConstants.showAuthenticationScreenSegueIdentifier, sender: nil)
+                }
+        alert.addAction(okAction)
+        present(alert, animated: true, completion: nil)
     }
 }
 
