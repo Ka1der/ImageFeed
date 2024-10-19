@@ -4,7 +4,7 @@
 //
 //  Created by Kaider on 23.09.2024.
 //
-import WebKit
+@preconcurrency import WebKit
 import UIKit
 
 final class WebViewViewController: UIViewController {

@@ -20,9 +20,6 @@ final class ProfileService {
         let firstName: String?
         let lastName: String?
         let bio: String?
-        
-//        var name: String { return "\(firstName) \(lastName)" }
-//        var loginName: String { return "@\(username)" }
     }
     
     // Получение публичной информации о пользователе GET /users/:username
@@ -73,7 +70,7 @@ final class ProfileService {
     }
     
     // Вспомогательный метод для создания запроса
-    private func makeRequest(token: String) -> URLRequest? {
+ private func makeRequest(token: String) -> URLRequest? {
         guard let url = URL(string: "me", relativeTo: Constants.defaultBaseURL)
         else {
             print ("ProfileService: неправильный URL")

@@ -14,6 +14,7 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
     private let oauth2Service = OAuth2Service.shared
     private let storage = OAuth2TokenStorage()
     private let profileService = ProfileService.shared // Использование синглтона
+    private let profileImageService = ProfileImageService.shared
     
     private enum SplashViewControllerConstants {
         static let showAuthenticationScreenSegueIdentifier = "ShowAuthenticationScreen"
@@ -132,16 +133,35 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
     private func fetchProfile(_ token: String) {
         UIBlockingProgressHUD.show()
         profileService.fetchProfile(token) { [weak self] result in
+            guard let self = self else { return }
             UIBlockingProgressHUD.dismiss()
             
-            guard let self = self else { return }
-            
             switch result {
-            case .success:
-                self.switchToTabBarController() // Успешная авторизация
-                print("Авторизация прошла успешно")
+            case .success(let profileResult):
+                let profile = ProfileService.Profile(
+                    username: profileResult.username,
+                    name: profileResult.name,
+                    loginName: "@" + profileResult.username,
+                    bio: profileResult.bio
+                )
+                print("SplashViewController: Получен профиль для пользователя: \(profile.username)") // Лог получения профиля
+                
+                // Вызов метода для получения URL изображения профиля
+                ProfileImageService.shared.fetchProfileImageURL(username: profileResult.username) { imageResult in
+                    switch imageResult {
+                    case .success(let url):
+                        print("SplashViewController: URL изображения профиля: \(url)") // Лог успешного получения URL
+
+                    case .failure(let error):
+                        print("SplashViewController: Ошибка получения URL изображения профиля: \(error.localizedDescription)") // Лог ошибки
+                    }
+                }
+                
+                self.switchToTabBarController()
+                print("SplashViewController: Авторизация прошла успешно для пользователя: \(profile.username)") // Лог успешной авторизации
             case .failure(let error):
-                self.showAlert(with: error) // Вызов алерта ошибки
+                print("SplashViewController: Ошибка получения профиля: \(error.localizedDescription)") // Лог ошибки
+                self.showAlert(with: error)
             }
         }
     }
@@ -153,7 +173,6 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
             message: error.localizedDescription,
             preferredStyle: .alert
         )
-        
         // Возвращаемся к экрану авторизации
         let okAction = UIAlertAction(title: "OK", style: .default) { [weak self] _ in
             self?.performSegue(withIdentifier: SplashViewControllerConstants.showAuthenticationScreenSegueIdentifier, sender: nil)
