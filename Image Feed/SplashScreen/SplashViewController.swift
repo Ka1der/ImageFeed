@@ -37,9 +37,9 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         
-        if storage.token != nil {
+        if let token = storage.token {
             print("Токен существует, переключение на TabBarController") // Лог ошибок
-            switchToTabBarController()
+            fetchProfile(token)
         } else {
             print("Токен не найден, выполняется переход к экрану аутентификации") // Лог ошибок
             performSegue(withIdentifier: SplashViewControllerConstants.showAuthenticationScreenSegueIdentifier, sender: nil)
@@ -114,11 +114,19 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
     }
     
     func didAuthenticate(_ vc: AuthViewController) {
-        vc.dismiss(animated: true)
-        guard let token = storage.token else {
-            return
+        vc.dismiss(animated: true) { [weak self] in
+
+            guard let self = self else {
+                print("SplashViewController: Self равен нулю") // Лог ошибок
+                           return
+            }
+            
+            guard let token = self.storage.token else {
+                print("SplashViewController: Токен не найден") // Лог ошибок
+                return
+            }
+            self.fetchProfile(token)
         }
-        fetchProfile(token)
     }
     
     private func fetchProfile(_ token: String) {

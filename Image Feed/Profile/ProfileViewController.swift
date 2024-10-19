@@ -67,8 +67,7 @@ final class ProfileViewController: UIViewController {
         setupUI()
         
         exitButton.addTarget(self, action: #selector (didTapLogOutButton), for: .touchUpInside)
-        
-        updateProfile()
+
     }
     
     // MARK: - Setup UI
