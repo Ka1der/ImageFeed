@@ -18,9 +18,11 @@ final class ProfileImageService {
     private let urlSession: URLSession = .shared
     private let storage = OAuth2TokenStorage()
     
+    static let didChangeNotification = Notification.Name(rawValue: "ProfileImageService.didChangeNotification")
+    
     struct UserResult: Codable {
-            let profileImage: [String: String]?
-        }
+        let profileImage: [String: String]?
+    }
     
     // Запрос аватара
     private func makeAvatarRequest(username: String) -> URLRequest? {
@@ -49,7 +51,7 @@ final class ProfileImageService {
             completion(.failure(NetworkError.urlSessionError))
             return
         }
-       let task = urlSession.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<UserResult, Error>) in
             guard let self = self else { return }
             
             switch result {
@@ -59,6 +61,10 @@ final class ProfileImageService {
                     self.avatarURL = profileImage
                     completion(.success(profileImage))
                     print("ProfileImageService: Успешно получен URL для аватарки: \(profileImage)") // Лог ошибок
+                    NotificationCenter.default.post(
+                            name: ProfileImageService.didChangeNotification,
+                            object: self,
+                            userInfo: ["URL": profileImage])
                 } else {
                     // Если URL отсутствует, возвращаем ошибку
                     print("ProfileImageService: URL изображения профиля отсутствует.")
@@ -67,7 +73,7 @@ final class ProfileImageService {
             case .failure(let error):
                 // В случае ошибки возвращаем ее в completion
                 print("ProfileImageService: Ошибка при получении изображения профиля: \(error.localizedDescription)") // Лог ошибок
-               print("result: \(result)")
+                print("result: \(result)")
                 completion(.failure(error))
             }
         }

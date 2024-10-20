@@ -10,6 +10,7 @@ import UIKit
 final class ProfileViewController: UIViewController {
     
     private let profileService = ProfileService.shared
+    private var profileImageServiceObserver: ProfileImageServiceObserver?
     
     // MARK: - UI Elements
     
@@ -67,6 +68,8 @@ final class ProfileViewController: UIViewController {
         setupUI()
         
         exitButton.addTarget(self, action: #selector (didTapLogOutButton), for: .touchUpInside)
+        
+        profileImageServiceObserver = ProfileImageServiceObserver()
 
     }
     
