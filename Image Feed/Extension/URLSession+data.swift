@@ -77,7 +77,7 @@ extension URLSession {
             for request: URLRequest,
             completion: @escaping (Result<T, Error>) -> Void
         ) -> URLSessionTask {
-//            let decoder = JSONDecoder()
+
             let decoder = SnakeCaseJSONDecoder() // Декодер snake_case в camelCase
             let task = data(for: request) { (result: Result<Data, Error>) in
                 switch result {

@@ -86,29 +86,29 @@ final class OAuth2Service {
             return
         }
         
-        let task = urlSession.data(for: request) { [weak self] result in
-            DispatchQueue.main.async {
-                guard let self else {
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<OAuthTokenResponseBody, Error>) in
+               DispatchQueue.main.async {
+                   guard let self = self else {
                     print("OAuth2Service: Self is nil") // Лог ошибок
                     preconditionFailure("Self is nil")
                 }
                 
                 // Обработка результата запроса
                 switch result {
-                case .success(let data):
-                    do {
-                        let OAuthTokenResponseBody = try self.decoder.decode(OAuthTokenResponseBody.self, from: data)
-                        print("OAuth2Service:\(OAuthTokenResponseBody)")
-                        print(OAuthTokenResponseBody)
-                        print(OAuthTokenResponseBody.accessToken)
-                        self.authToken = OAuthTokenResponseBody.accessToken
-                        completion(.success(OAuthTokenResponseBody.accessToken))
-                    } catch {
-                        print("OAuth2Service: ошибка декодирования: \(error.localizedDescription)") // Лог ошибок
-                        completion(.failure(error))
-                    }
+                case .success(let responceBody):
+//                    do {
+//                        let OAuthTokenResponseBody = try self.decoder.decode(OAuthTokenResponseBody.self, from: data)
+                        print("OAuth2Service:\(responceBody)")
+                        print(responceBody)
+                        print(responceBody.accessToken)
+                        self.authToken = responceBody.accessToken
+                        completion(.success(responceBody.accessToken))
+//                    } catch {
+//                        print("OAuth2Service: ошибка декодирования: \(error.localizedDescription)") // Лог ошибок
+//                        completion(.failure(error))
+//                    }
                 case .failure(let error):
-                    print("OAuth2Service:\(error.localizedDescription)") // Лог ошибок
+                    print("OAuth2Service: ошибка декодирования: \(error.localizedDescription)") // Лог ошибок
                     completion(.failure(error))
                 }
                 self.task = nil
