@@ -147,7 +147,7 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
                 print("SplashViewController: Получен профиль для пользователя: \(profile.username)") // Лог получения профиля
                 
                 // Вызов метода для получения URL изображения профиля
-                ProfileImageService.shared.fetchProfileImageURL(username: profileResult.username) { imageResult in
+                ProfileImageService.shared.fetchProfileImageURL(username: profileResult.username, in: self) { imageResult in
                     switch imageResult {
                     case .success(let url):
                         print("SplashViewController: URL изображения профиля: \(url)") // Лог успешного получения URL

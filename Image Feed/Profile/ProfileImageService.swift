@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 
 final class ProfileImageService {
     
@@ -18,7 +19,7 @@ final class ProfileImageService {
     private let urlSession: URLSession = .shared
     private let storage = OAuth2TokenStorage()
     
-    static let didChangeNotification = Notification.Name(rawValue: "ProfileImageService.didChangeNotification")
+    static let didChangeNotification = Notification.Name(rawValue: "ProfileImageService.didChangeNotification")  
     
     struct UserResult: Codable {
         let profileImage: [String: String]?
@@ -44,7 +45,7 @@ final class ProfileImageService {
         return request
     }
     
-    func fetchProfileImageURL(username: String, _ completion: @escaping (Result<String, Error>) -> Void) {
+    func fetchProfileImageURL(username: String, in viewController: UIViewController, _ completion: @escaping (Result<String, Error>) -> Void) {
         
         guard let request = makeAvatarRequest(username: username) else {
             print("ProfileImageService: Невозможно создать запрос.")

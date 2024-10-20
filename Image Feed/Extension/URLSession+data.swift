@@ -20,7 +20,6 @@ extension URLSession {
     
     func data(
         for request: URLRequest,
-        in viewController: UIViewController,
         completion: @escaping (Result<Data, Error>) -> Void
     ) -> URLSessionTask {
         let fulfillCompletionOnTheMainThread: (Result<Data, Error>) -> Void = { result in
@@ -34,14 +33,11 @@ extension URLSession {
                 if 200 ..< 300 ~= statusCode {
                     fulfillCompletionOnTheMainThread(.success(data))
                 } else {
-                    self.showAlert(in: viewController) // Алерт при ошибке статуса
                     fulfillCompletionOnTheMainThread(.failure(NetworkError.httpStatusCode(statusCode)))
                 }
             } else if let error = error {
-                self.showAlert(in: viewController) // Алерт при ошибке запроса
                 fulfillCompletionOnTheMainThread(.failure(NetworkError.urlRequestError(error)))
             } else {
-                self.showAlert(in: viewController) // Алерт при общей ошибке
                 fulfillCompletionOnTheMainThread(.failure(NetworkError.urlSessionError))
             }
         })
@@ -50,12 +46,12 @@ extension URLSession {
     
     func objectTask<T: Decodable>(
         for request: URLRequest,
-        in viewController: UIViewController,
         completion: @escaping (Result<T, Error>) -> Void
     ) -> URLSessionTask {
         
         let decoder = SnakeCaseJSONDecoder() // Декодер snake_case в camelCase
-        let task = data(for: request, in: viewController) { (result: Result<Data, Error>) in
+        
+        let task = data(for: request) { (result: Result<Data, Error>) in
             switch result {
             case .success(let data):
                 do {
@@ -84,11 +80,5 @@ extension URLSession {
             }
         }
         return task
-    }
-    
-    private func showAlert(in viewController: UIViewController) {
-        let alert = UIAlertController(title: "Что-то пошло не так(", message: "Не удалось войти в систему", preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
-        viewController.present(alert, animated: true, completion: nil)
     }
 }
