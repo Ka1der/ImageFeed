@@ -96,17 +96,11 @@ final class OAuth2Service {
                 // Обработка результата запроса
                 switch result {
                 case .success(let responceBody):
-//                    do {
-//                        let OAuthTokenResponseBody = try self.decoder.decode(OAuthTokenResponseBody.self, from: data)
                         print("OAuth2Service:\(responceBody)")
                         print(responceBody)
                         print(responceBody.accessToken)
                         self.authToken = responceBody.accessToken
                         completion(.success(responceBody.accessToken))
-//                    } catch {
-//                        print("OAuth2Service: ошибка декодирования: \(error.localizedDescription)") // Лог ошибок
-//                        completion(.failure(error))
-//                    }
                 case .failure(let error):
                     print("OAuth2Service: ошибка декодирования: \(error.localizedDescription)") // Лог ошибок
                     completion(.failure(error))
