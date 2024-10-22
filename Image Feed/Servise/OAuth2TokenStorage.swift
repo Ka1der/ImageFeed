@@ -6,16 +6,25 @@
 //
 
 import Foundation
+import SwiftKeychainWrapper
 
 final class OAuth2TokenStorage {
     
     // Хранение токена
     var token: String? {
         get {
-            storage.string(forKey: Keys.token.rawValue)
+            KeychainWrapper.standard.string(forKey: Keys.token.rawValue)
+//            storage.string(forKey: Keys.token.rawValue)
         }
         set {
-            storage.set(newValue, forKey: Keys.token.rawValue)
+            if let token = newValue {
+                KeychainWrapper.standard.set(token, forKey: Keys.token.rawValue)
+            } else {
+                KeychainWrapper.standard.removeObject(forKey: Keys.token.rawValue)
+                }
+            }
+           
+//            storage.set(newValue, forKey: Keys.token.rawValue)
         }
     }
 
@@ -24,5 +33,3 @@ final class OAuth2TokenStorage {
     private enum Keys: String {
         case token
     }
-}
-
