@@ -18,7 +18,7 @@ final class OAuth2TokenStorage {
             storage.set(newValue, forKey: Keys.token.rawValue)
         }
     }
-    
+
     private let storage: UserDefaults = .standard
     
     private enum Keys: String {

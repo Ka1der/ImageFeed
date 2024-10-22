@@ -39,10 +39,10 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
         super.viewDidAppear(animated)
         
         if let token = storage.token {
-            print("Токен существует, переключение на TabBarController") // Лог ошибок
+            print("SplashViewController: Токен существует, переключение на TabBarController") // Лог ошибок
             fetchProfile(token)
         } else {
-            print("Токен не найден, выполняется переход к экрану аутентификации") // Лог ошибок
+            print("SplashViewController: Токен не найден, выполняется переход к экрану аутентификации") // Лог ошибок
             performSegue(withIdentifier: SplashViewControllerConstants.showAuthenticationScreenSegueIdentifier, sender: nil)
         }
     }
@@ -59,7 +59,7 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
                 assertionFailure("Failed to prepare for \(SplashViewControllerConstants.showAuthenticationScreenSegueIdentifier)")
                 return
             }
-            print("Подготовка к переходу на AuthViewController") // Лог ошибок
+            print("SplashViewController: Подготовка к переходу на AuthViewController") // Лог ошибок
             viewController.delegate = self
         } else {
             super.prepare(for: segue, sender: sender)
@@ -71,11 +71,10 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
         print("Аутентифицирован с помощью кода в SplashViewController: \(code)") // Лог ошибок
         dismiss(animated: true) { [weak self] in
-            guard let self = self else {
+            guard self != nil else {
                 print("SplashViewController: Self равен нулю") // Лог ошибок
                 return
             }
-            self.fetchOAuthToken(code)
         }
     }
     
@@ -91,43 +90,12 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
         let tabBarController = UIStoryboard(name: "Main", bundle: .main)
             .instantiateViewController(withIdentifier: "TabBarViewController")
         // Установим в `rootViewController` полученный контроллер
-        print("Переключение на TabBarController") // Лог ошибок
+        print("SplashViewController: Переключение на TabBarController") // Лог ошибок
         window.rootViewController = tabBarController
     }
     
-    private func fetchOAuthToken(_ code: String) {
-        print("Извлечение токена OAuth с помощью кода: \(code)") // Лог ошибок
-        oauth2Service.fetchOAuthToken(code) { [weak self] result in
-            DispatchQueue.main.async {
-                UIBlockingProgressHUD.show()
-                guard let self else {
-                    print("SplashViewController: равен нулю") // Лог ошибок
-                    preconditionFailure("Weak self error") }
-                switch result {
-                case .success(let token):
-                    self.fetchProfile(token)
-                case .failure(let error):
-                    print("Ошибка извлечения токена \(error)") // Лог ошибок
-                    UIBlockingProgressHUD.dismiss()
-                }
-            }
-        }
-    }
-    
     func didAuthenticate(_ vc: AuthViewController) {
-        vc.dismiss(animated: true) { [weak self] in
-
-            guard let self = self else {
-                print("SplashViewController: Self равен нулю") // Лог ошибок
-                           return
-            }
-            
-            guard let token = self.storage.token else {
-                print("SplashViewController: Токен не найден") // Лог ошибок
-                return
-            }
-            self.fetchProfile(token)
-        }
+        vc.dismiss(animated: true, completion: nil)
     }
     
     private func fetchProfile(_ token: String) {

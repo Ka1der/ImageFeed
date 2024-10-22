@@ -58,7 +58,7 @@ final class ProfileImageService {
             switch result {
             case .success(let userResult):
                 // Если URL изображения присутствует, сохраняем его и возвращаем в completion
-                if let profileImage = userResult.profileImage?["small"] {
+                if let profileImage = userResult.profileImage?["large"] {
                     self.avatarURL = profileImage
                     completion(.success(profileImage))
                     print("ProfileImageService: Успешно получен URL для аватарки: \(profileImage)") // Лог ошибок

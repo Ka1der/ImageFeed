@@ -28,7 +28,6 @@ final class OAuth2Service {
     static let shared = OAuth2Service()
     private let urlSession = URLSession.shared
     private let decoder = JSONDecoder()
-    
     private var task: URLSessionTask?
     private var lastCode: String?
     
@@ -71,7 +70,6 @@ final class OAuth2Service {
     
     // Получение токена от сервера по переданному авторизационному коду
     func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, any Error>) -> Void) {
-        
         assert(Thread.isMainThread)
         guard lastCode != code else {
             completion(.failure(AuthServiceError.invalidRequest))
@@ -79,10 +77,10 @@ final class OAuth2Service {
         }
         task?.cancel()
         lastCode = code
-        print("Запомнили code который использовался в запросе") // Лог ошибок
+        print("OAuth2Service: Запомнили code который использовался в запросе") // Лог ошибок
         
         guard let request = makeOAuthTokenRequest(code: code) else {
-            print("запрос на получение токена не создан") // Лог ошибок
+            print("OAuth2Service: запрос на получение токена не создан") // Лог ошибок
             completion(.failure(AuthServiceError.invalidRequest))
             return
         }
@@ -100,8 +98,7 @@ final class OAuth2Service {
                     do {
                         let OAuthTokenResponseBody = try self.decoder.decode(OAuthTokenResponseBody.self, from: data)
                         print("OAuth2Service:\(OAuthTokenResponseBody)")
-                        print(OAuthTokenResponseBody)
-                        print(OAuthTokenResponseBody.accessToken)
+                        print("OAuth2Service: \(OAuthTokenResponseBody.accessToken)")
                         self.authToken = OAuthTokenResponseBody.accessToken
                         completion(.success(OAuthTokenResponseBody.accessToken))
                     } catch {

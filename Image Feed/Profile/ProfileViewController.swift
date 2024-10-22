@@ -6,11 +6,14 @@
 //
 
 import UIKit
+import Kingfisher
 
 final class ProfileViewController: UIViewController {
     
+    static let shared = ProfileViewController()
+    private var profileImageServiceObserver: NSObjectProtocol?
     private let profileService = ProfileService.shared
-    private var profileImageServiceObserver: ProfileImageServiceObserver?
+  
     
     // MARK: - UI Elements
     
@@ -69,8 +72,20 @@ final class ProfileViewController: UIViewController {
         
         exitButton.addTarget(self, action: #selector (didTapLogOutButton), for: .touchUpInside)
         
-        profileImageServiceObserver = ProfileImageServiceObserver()
-
+        profileImageServiceObserver = NotificationCenter.default.addObserver(
+            forName: ProfileImageService.didChangeNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            guard let self = self else { return }
+            self.updateAvatar()
+        }
+        updateAvatar()
+    }
+    deinit {
+        if let observer = profileImageServiceObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
     }
     
     // MARK: - Setup UI
@@ -187,5 +202,16 @@ final class ProfileViewController: UIViewController {
         usernameLabel.text = profile.loginName
         messageLabel.text = profile.bio
         print("ProfileViewController: UI обновлен с данными профиля") // Лог ошибок
+    }
+    
+    private func updateAvatar() {
+        guard
+                let profileImageURL = ProfileImageService.shared.avatarURL,
+                let url = URL(string: profileImageURL)
+        else { return }
+        print("ProfileViewController: Avatar image URL: \(url)") // Лог ошибок
+        let processor = RoundCornerImageProcessor(cornerRadius: 20)
+        avatarImageView.kf.indicatorType = .activity
+        avatarImageView.kf.setImage(with: url, placeholder: UIImage(named: "placeholder.jpeg"), options: [.processor(processor)])
     }
 }
