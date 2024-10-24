@@ -58,11 +58,6 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
             fetchProfile(token)
         } else {
             print("SplashViewController: Токен не найден, выполняется переход к экрану аутентификации") // Лог ошибок
-//            let viewController = AuthViewController()
-//            viewController.delegate = self
-//            viewController.modalPresentationStyle = .fullScreen
-//            present(viewController, animated: true)
-            
             let storyboard = UIStoryboard(name: "Main", bundle: .main)
             guard let viewController = storyboard.instantiateViewController(withIdentifier: "AuthViewController") as? AuthViewController else {
                 return
