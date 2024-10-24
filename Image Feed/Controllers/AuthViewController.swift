@@ -23,6 +23,7 @@ final class AuthViewController: UIViewController, WebViewViewControllerDelegate 
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        performSegue(withIdentifier: ShowWebViewSegueIdentifier, sender: self)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
