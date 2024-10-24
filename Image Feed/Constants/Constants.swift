@@ -20,5 +20,3 @@ enum Constants {
         return url
     }
 }
-
-
