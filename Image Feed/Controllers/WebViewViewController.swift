@@ -25,8 +25,6 @@ final class WebViewViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         webView.navigationDelegate = self
-        updateProgress()
-        createURLComponents()
         
         // Новое API KVO
         estimatedProgressObservation = webView.observe(
