@@ -43,6 +43,11 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        view.addSubview(splashScreenLogo)
+        
+        setupCostraints()
+        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -53,7 +58,15 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
             fetchProfile(token)
         } else {
             print("SplashViewController: Токен не найден, выполняется переход к экрану аутентификации") // Лог ошибок
-            let viewController = AuthViewController()
+//            let viewController = AuthViewController()
+//            viewController.delegate = self
+//            viewController.modalPresentationStyle = .fullScreen
+//            present(viewController, animated: true)
+            
+            let storyboard = UIStoryboard(name: "Main", bundle: .main)
+            guard let viewController = storyboard.instantiateViewController(withIdentifier: "AuthViewController") as? AuthViewController else {
+                return
+            }
             viewController.delegate = self
             viewController.modalPresentationStyle = .fullScreen
             present(viewController, animated: true)
@@ -64,12 +77,6 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
     
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String) {
         print("Аутентифицирован с помощью кода в SplashViewController: \(code)") // Лог ошибок
-        dismiss(animated: true) { [weak self] in
-            guard self != nil else {
-                print("SplashViewController: Self равен нулю") // Лог ошибок
-                return
-            }
-        }
     }
     
     // MARK: - Private Methods

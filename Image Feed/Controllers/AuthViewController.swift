@@ -23,7 +23,6 @@ final class AuthViewController: UIViewController, WebViewViewControllerDelegate 
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        performSegue(withIdentifier: ShowWebViewSegueIdentifier, sender: self)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -54,8 +53,12 @@ final class AuthViewController: UIViewController, WebViewViewControllerDelegate 
                 
                 switch result {
                 case .success(let token):
+                    self.storage.token = token
                     print("AuthViewController: Успешно авторизован: \(token)")
-                    self.delegate?.didAuthenticate(self)
+                    self.dismiss(animated: true) { [weak self] in
+                                        guard let self = self else { return }
+                                        self.delegate?.didAuthenticate(self)
+                                    }
                 case .failure(let error):
                     print("AuthViewController Ошибка авторизации: \(error)")
                     self.showAlert(in: self)
