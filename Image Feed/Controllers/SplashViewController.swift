@@ -20,6 +20,16 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
         static let showAuthenticationScreenSegueIdentifier = "ShowAuthenticationScreen"
     }
     
+    // MARK: - UI Elements
+    
+    // Лого
+    private let splashScreenLogo: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(named: "SplashScreenLogo")
+        imageView.contentMode = .scaleAspectFit
+        return imageView
+    } ()
+    
     // MARK: - Lifecycle
     
     override func viewWillAppear(_ animated: Bool) {
@@ -43,26 +53,10 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
             fetchProfile(token)
         } else {
             print("SplashViewController: Токен не найден, выполняется переход к экрану аутентификации") // Лог ошибок
-            performSegue(withIdentifier: SplashViewControllerConstants.showAuthenticationScreenSegueIdentifier, sender: nil)
-        }
-    }
-    
-    // MARK: - Navigation
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == SplashViewControllerConstants.showAuthenticationScreenSegueIdentifier {
-            
-            guard
-                let navigationController = segue.destination as? UINavigationController,
-                let viewController = navigationController.viewControllers[0] as? AuthViewController
-            else {
-                assertionFailure("Failed to prepare for \(SplashViewControllerConstants.showAuthenticationScreenSegueIdentifier)")
-                return
-            }
-            print("SplashViewController: Подготовка к переходу на AuthViewController") // Лог ошибок
+            let viewController = AuthViewController()
             viewController.delegate = self
-        } else {
-            super.prepare(for: segue, sender: sender)
+            viewController.modalPresentationStyle = .fullScreen
+            present(viewController, animated: true)
         }
     }
     
@@ -147,6 +141,14 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
                 }
         alert.addAction(okAction)
         present(alert, animated: true, completion: nil)
+    }
+    
+    private func setupCostraints() {
+        // Лого
+        NSLayoutConstraint.activate([
+            splashScreenLogo.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            splashScreenLogo.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+        ])
     }
 }
 
