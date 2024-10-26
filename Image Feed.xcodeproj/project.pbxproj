@@ -14,6 +14,7 @@
 		7D9CFA4A28DDEE7F00D971A7 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7D9CFA4828DDEE7F00D971A7 /* Main.storyboard */; };
 		7D9CFA4C28DDEE8000D971A7 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7D9CFA4B28DDEE8000D971A7 /* Assets.xcassets */; };
 		7D9CFA4F28DDEE8000D971A7 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7D9CFA4D28DDEE8000D971A7 /* LaunchScreen.storyboard */; };
+		C90755C72CCCDB840054138A /* ProfileModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90755C62CCCDB840054138A /* ProfileModels.swift */; };
 		C90D93CC2C8787A40001B9BB /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90D93CB2C8787A40001B9BB /* ProfileViewController.swift */; };
 		C932B5602CC39B2700D8859F /* SnakeCaseJSONDecoder.swift in Sources */ = {isa = PBXBuildFile; fileRef = C932B55F2CC39B2700D8859F /* SnakeCaseJSONDecoder.swift */; };
 		C932B5FE2CC3F8D000D8859F /* ProfileImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = C932B5FD2CC3F8D000D8859F /* ProfileImageService.swift */; };
@@ -46,6 +47,7 @@
 		7D9CFA4B28DDEE8000D971A7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7D9CFA4E28DDEE8000D971A7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7D9CFA5028DDEE8000D971A7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C90755C62CCCDB840054138A /* ProfileModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileModels.swift; sourceTree = "<group>"; };
 		C90D93CB2C8787A40001B9BB /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		C932B55F2CC39B2700D8859F /* SnakeCaseJSONDecoder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnakeCaseJSONDecoder.swift; sourceTree = "<group>"; };
 		C932B5FD2CC3F8D000D8859F /* ProfileImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileImageService.swift; sourceTree = "<group>"; };
@@ -117,6 +119,7 @@
 			isa = PBXGroup;
 			children = (
 				C94CE9C72CBB03E9002831B3 /* ProfileService.swift */,
+				C90755C62CCCDB840054138A /* ProfileModels.swift */,
 				C932B5FD2CC3F8D000D8859F /* ProfileImageService.swift */,
 			);
 			path = Profile;
@@ -272,6 +275,7 @@
 				C9ECFAE42C8A3A97000F7A41 /* SingleImageViewController.swift in Sources */,
 				C9F3E9C02CA157700026BB8F /* WebViewViewController.swift in Sources */,
 				C94CE9C82CBB03E9002831B3 /* ProfileService.swift in Sources */,
+				C90755C72CCCDB840054138A /* ProfileModels.swift in Sources */,
 				C9F3EA2D2CA438F40026BB8F /* OAuthTokenResponseBody.swift in Sources */,
 				C9F3EA282CA3EFF60026BB8F /* WebViewViewControllerDelegate.swift in Sources */,
 				C9F3EA012CA3628E0026BB8F /* OAuth2Service.swift in Sources */,

@@ -16,17 +16,14 @@ final class WebViewViewController: UIViewController {
     // MARK: - Properties
     weak var delegate: WebViewViewControllerDelegate?
     private var estimatedProgressObservation: NSKeyValueObservation?
+    private var unsplashAuthorizeURLString = Constants.unsplashAuthorizeURLString
     
-    private enum WebViewConstants {
-        static let unsplashAuthorizeURLString = "https://unsplash.com/oauth/authorize"
-    }
     
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
         webView.navigationDelegate = self
         
-        // Новое API KVO
         estimatedProgressObservation = webView.observe(
             \.estimatedProgress,
              options: [],
@@ -40,7 +37,7 @@ final class WebViewViewController: UIViewController {
     
     
     // MARK: - IBActions
-    @IBAction func didTapBackButton(_ sender: Any?) {
+    @IBAction private func didTapBackButton(_ sender: Any?) {
         delegate?.webViewViewControllerDidCancel(self)
     }
     
@@ -50,7 +47,7 @@ final class WebViewViewController: UIViewController {
     }
     
     func createURLComponents() {
-        guard var urlComponents = URLComponents(string: WebViewConstants.unsplashAuthorizeURLString) else {
+        guard var urlComponents = URLComponents(string: unsplashAuthorizeURLString) else {
             return
         }
         urlComponents.queryItems = [

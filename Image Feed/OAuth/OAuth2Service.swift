@@ -37,7 +37,6 @@ final class OAuth2Service {
     
     // MARK: - OAuth Token Request
     
-    // Создание URLRequest для получение токена
     private func makeOAuthTokenRequest(code: String) -> URLRequest? {
         guard var urlComponents = URLComponents(string: OAuth2ServiceConstants.unsplashGetTokenURLString) else {
             print("OAuth2Service: Неверный URL для запроса токена") // Лог ошибки
@@ -53,14 +52,12 @@ final class OAuth2Service {
             URLQueryItem(name: "grant_type", value: "authorization_code")
         ]
         
-        // Проверка URL после добавления параметров
         guard let url = urlComponents.url else {
             print("OAuth2Service: Не удалось создать URL с параметрами") // Лог ошибки
             assertionFailure("Invalid URL after adding query items")
             return nil
         }
         
-        // Создание URLRequest
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         print("OAuth2Service:\(request)") // Лог ошибок
@@ -68,7 +65,6 @@ final class OAuth2Service {
     }
     // MARK: - Fetch OAuth Token
     
-    // Получение токена от сервера по переданному авторизационному коду
     func fetchOAuthToken(_ code: String, completion: @escaping (Result<String, any Error>) -> Void) {
         assert(Thread.isMainThread)
         guard lastCode != code else {
@@ -92,7 +88,6 @@ final class OAuth2Service {
                     preconditionFailure("Self is nil")
                 }
                 
-                // Обработка результата запроса
                 switch result {
                 case .success(let data):
                     do {

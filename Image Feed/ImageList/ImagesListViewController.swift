@@ -68,14 +68,14 @@ extension ImagesListViewController: UITableViewDataSource {
 
 extension ImagesListViewController {
     func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
-        guard let image = UIImage(named: photosName[indexPath.row]) else { // Загрузка изображения по имени
+        guard let image = UIImage(named: photosName[indexPath.row]) else {
             return
         }
         
-        cell.cellImage.image = image  // Установка изображения в ячейку
-        cell.dateLabel.text = dateFormatter.string(from: Date()) // Установка текущей даты в текстовый лейбл
+        cell.cellImage.image = image
+        cell.dateLabel.text = dateFormatter.string(from: Date())
         
-        let isLiked = indexPath.row % 2 == 0  // Установка иконки лайка в зависимости от индекса
+        let isLiked = indexPath.row % 2 == 0
         let likeImage = isLiked ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off")
         cell.likeButton.setImage(likeImage, for: .normal)
     }

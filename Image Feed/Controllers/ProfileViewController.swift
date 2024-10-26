@@ -197,7 +197,7 @@ final class ProfileViewController: UIViewController {
         print("ProfileViewController: UI обновлен с данными профиля") // Лог ошибок
     }
     
-    private func updateUI(with profile: ProfileService.Profile) {
+    private func updateUI(with profile: ProfileModels.Profile) {
         nameLabel.text = profile.name
         usernameLabel.text = profile.loginName
         messageLabel.text = profile.bio

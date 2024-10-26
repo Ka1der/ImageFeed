@@ -10,22 +10,26 @@ import UIKit
 
 final class ProfileImageService {
     
+    // MARK: - Singleton
     static let shared = ProfileImageService()
     private init() {}
     
+    // MARK: - Private Properties
     private(set) var avatarURL: String?
     private var task: URLSessionTask?
     private let decoder = SnakeCaseJSONDecoder()
     private let urlSession: URLSession = .shared
     private let storage = OAuth2TokenStorage()
     
-    static let didChangeNotification = Notification.Name(rawValue: "ProfileImageService.didChangeNotification")  
+    // MARK: - Public Properties
+    static let didChangeNotification = Notification.Name(rawValue: "ProfileImageService.didChangeNotification")
     
+    // MARK: - Models
     struct UserResult: Codable {
         let profileImage: [String: String]?
     }
     
-    // Запрос аватара
+    // MARK: - Private Methods
     private func makeAvatarRequest(username: String) -> URLRequest? {
         guard let url = URL(string: "users/\(username)", relativeTo: Constants.defaultBaseURL)
         else {
@@ -45,6 +49,7 @@ final class ProfileImageService {
         return request
     }
     
+    // MARK: - Public Methods
     func fetchProfileImageURL(username: String, in viewController: UIViewController, _ completion: @escaping (Result<String, Error>) -> Void) {
         
         guard let request = makeAvatarRequest(username: username) else {
@@ -57,7 +62,6 @@ final class ProfileImageService {
             
             switch result {
             case .success(let userResult):
-                // Если URL изображения присутствует, сохраняем его и возвращаем в completion
                 if let profileImage = userResult.profileImage?["large"] {
                     self.avatarURL = profileImage
                     completion(.success(profileImage))
@@ -67,12 +71,10 @@ final class ProfileImageService {
                             object: self,
                             userInfo: ["URL": profileImage])
                 } else {
-                    // Если URL отсутствует, возвращаем ошибку
                     print("ProfileImageService: URL изображения профиля отсутствует.")
                     completion(.failure(NetworkError.noData)) // Лог ошибок
                 }
             case .failure(let error):
-                // В случае ошибки возвращаем ее в completion
                 print("ProfileImageService: Ошибка при получении изображения профиля: \(error.localizedDescription)") // Лог ошибок
                 print("result: \(result)")
                 completion(.failure(error))

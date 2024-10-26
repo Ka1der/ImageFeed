@@ -10,7 +10,6 @@ import SwiftKeychainWrapper
 
 final class OAuth2TokenStorage {
     
-    // Хранение токена
     var token: String? {
         get {
             KeychainWrapper.standard.string(forKey: Keys.token.rawValue)
@@ -23,7 +22,6 @@ final class OAuth2TokenStorage {
             }
         }
     }
-    
     
     private let storage: UserDefaults = .standard
     

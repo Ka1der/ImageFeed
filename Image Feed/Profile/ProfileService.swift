@@ -9,49 +9,35 @@ import Foundation
 
 final class ProfileService {
     
+    // MARK: - Singleton
     static let shared = ProfileService()
     
-    private init() {} // Приватный инициализатор синглтона
+    private init() {}
     
-    // Получение базовой информации о пользователе GET /me
-    struct ProfileResult: Codable {
-        let username: String
-        let name: String?
-        let firstName: String?
-        let lastName: String?
-        let bio: String?
-    }
-    
-    // Получение публичной информации о пользователе GET /users/:username
-    struct Profile {
-        let username: String
-        let name: String
-        let loginName: String
-        let bio: String
-    }
-    
+    // MARK: - Private Properties
     private let urlSession = URLSession.shared
-    private var task: URLSessionTask? // Переменная текущего запроса
+    private var task: URLSessionTask?
     private var lastToken: String?
-    private(set) var profile: Profile?
+    private(set) var profile: ProfileModels.Profile?
     
-    func fetchProfile(_ token: String, completion: @escaping (Result<Profile, Error>) -> Void) {
-        assert(Thread.isMainThread) // Проверяем работу в главном потоке
+    // MARK: - Public Methods
+    func fetchProfile(_ token: String, completion: @escaping (Result<ProfileModels.Profile, Error>) -> Void) {
+        assert(Thread.isMainThread)
         task?.cancel()
         
-        guard let request = makeRequest(token: token) else { // Создаем запрос
+        guard let request = makeRequest(token: token) else {
             print("ProfileService: Невозможно создать запрос.")
             return
         }
         
-        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<ProfileResult, Error>) in
+        let task = urlSession.objectTask(for: request) { [weak self] (result: Result<ProfileModels.ProfileResult, Error>) in
            
             guard self != nil else { return }
             
             switch result {
             case .success(let profileResult):
                 print("ProfileService: Успешно получен профиль") // Лог
-                let profile = Profile( // Создаем объект Profile
+                let profile = ProfileModels.Profile(
                     username: profileResult.username,
                     name: profileResult.name ?? " ",
                     loginName: "@" + profileResult.username,
@@ -69,7 +55,7 @@ final class ProfileService {
         task.resume()
     }
     
-    // Вспомогательный метод для создания запроса
+    // MARK: - Private Methods
  private func makeRequest(token: String) -> URLRequest? {
         guard let url = URL(string: "me", relativeTo: Constants.defaultBaseURL)
         else {

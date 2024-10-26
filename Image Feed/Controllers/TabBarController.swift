@@ -8,11 +8,18 @@
 import UIKit
 
 final class TabBarController: UITabBarController {
+    
+    // MARK: - Lifecycle
     override func awakeFromNib() {
         super.awakeFromNib()
+        configurateviewControllers()
         
+    }
+    
+    // MARK: - Private Methods
+    private func configurateviewControllers() {
+    
         let storyboard = UIStoryboard(name: "Main", bundle: .main)
-        
         let imagesListViewController = storyboard.instantiateViewController(
             withIdentifier: "ImagesListViewController")
         

@@ -8,6 +8,7 @@
 import UIKit
 import ProgressHUD
 
+// MARK: - Protocols
 protocol AuthViewControllerDelegate: AnyObject {
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String)
     func didAuthenticate(_ vc: AuthViewController)
@@ -15,16 +16,22 @@ protocol AuthViewControllerDelegate: AnyObject {
 
 final class AuthViewController: UIViewController, WebViewViewControllerDelegate {
     
+    // MARK: - Constants
     private let ShowWebViewSegueIdentifier = "ShowWebView"
+    
+    // MARK: - Private Properties
     private let oauth2Service = OAuth2Service.shared
     private let storage = OAuth2TokenStorage()
     
+    // MARK: - Public Properties
     weak var delegate: AuthViewControllerDelegate?
     
+    // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
     }
     
+    // MARK: - Navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == ShowWebViewSegueIdentifier {
             guard let webViewViewController = segue.destination as? WebViewViewController else {
@@ -36,12 +43,14 @@ final class AuthViewController: UIViewController, WebViewViewControllerDelegate 
         }
     }
     
+    // MARK: - Private Methods
     private func showAlert(in viewController: UIViewController) {
         let alert = UIAlertController(title: "Что-то пошло не так(", message: "Не удалось войти в систему", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
         viewController.present(alert, animated: true, completion: nil)
     }
     
+    // MARK: - WebViewViewControllerDelegate
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
         UIBlockingProgressHUD.show()
         delegate?.authViewController(self, didAuthenticateWithCode: code)

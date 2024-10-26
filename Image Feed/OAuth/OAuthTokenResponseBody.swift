@@ -7,7 +7,6 @@
 
 import Foundation
 
-// Декодируем ответ от сервера в формате JSON
 struct OAuthTokenResponseBody: Decodable {
     
     let accessToken: String
