@@ -148,7 +148,25 @@ final class ProfileViewController: UIViewController {
         let yesTapAction = UIAlertAction(
             title: "Да",
             style: .destructive)
-        { _ in print("Пользватель вышел")
+        { [weak self] _ in
+            guard let self = self else { return }
+            self.tokenStorage.token = nil
+            
+            Kingfisher.ImageCache.default.clearMemoryCache()
+            Kingfisher.ImageCache.default.clearDiskCache()
+            
+            guard let window = UIApplication.shared.windows.first else { return }
+            
+            let splashViewController = SplashViewController()
+            window.rootViewController = splashViewController
+         
+            UIView.transition(with: window,
+                                      duration: 0.3,
+                                      options: .transitionCrossDissolve,
+                                      animations: nil,
+                                      completion: nil)
+                      
+                      print("Пользователь успешно вышел из системы")
         }
         yesTapAction.setValue(UIColor.blue, forKey: .init("titleTextColor"))
         
@@ -166,7 +184,7 @@ final class ProfileViewController: UIViewController {
     
     private func updateProfile() {
         guard let token = tokenStorage.token else {
-            print("ProfileViewController: Токен отсутствует") // Лог ошибок
+            print("\(#file):\(#line)] \(#function) Токен отсутствует") // Лог ошибок
             return
         }
         
@@ -178,7 +196,7 @@ final class ProfileViewController: UIViewController {
                 case .success(let profile):
                     self.updateUI(with: profile)
                 case .failure(let error):
-                    print("ProfileViewController: Ошибка при получении профиля - \(error.localizedDescription)") // Лог ошибок
+                    print("\(#file):\(#line)] \(#function) Ошибка при получении профиля - \(error.localizedDescription)") // Лог ошибок
                 }
             }
         }
@@ -186,7 +204,7 @@ final class ProfileViewController: UIViewController {
     
     private func updateProfileDetalis() {
         guard let profile = profileService.profile else {
-            print("ProfileViewController: Профиль отсутствует") // Лог ошибок
+            print("\(#file):\(#line)] \(#function) Профиль отсутствует") // Лог ошибок
             return
         }
         
@@ -194,7 +212,7 @@ final class ProfileViewController: UIViewController {
         usernameLabel.text = profile.loginName
         messageLabel.text = profile.bio
         
-        print("ProfileViewController: UI обновлен с данными профиля") // Лог ошибок
+        print("\(#file):\(#line)] \(#function) UI обновлен с данными профиля") // Лог ошибок
     }
     
     private func updateUI(with profile: ProfileModels.Profile) {

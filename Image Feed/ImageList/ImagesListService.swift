@@ -8,12 +8,10 @@
 import Foundation
 
 final class ImagesListService {
-    
+    // MARK: - Properties
     static let shared = ImagesListService()
     
-    init() {}
-    
-    private (set) var photos: [Photo] = []
+    private(set) var photos: [Photo] = []
     private var lastLoadedPage: Int = 0
     private var task: URLSessionTask?
     private let perPage = 10
@@ -21,75 +19,91 @@ final class ImagesListService {
     
     static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     
+    // MARK: - Private Properties
+    private let dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ" // Формат для парсинга даты из API
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        return formatter
+    }()
+    
+    // MARK: - Public Methods
     func fetchPhotosNextPage() {
-        // Проверяем, не идёт ли уже закачка
         guard task == nil else {
-            print("[\(#file):\(#line)] \(#function) Фотографии уже загружаются") // Лог ошибок
+            print("[\(#file):\(#line)] \(#function) Фотографии уже загружаются")
             return
         }
         
         guard let token = storage.token else {
-            print("[\(#file):\(#line)] \(#function) Токен отсутствует") // Лог ошибок
+            print("[\(#file):\(#line)] \(#function) Токен отсутствует")
             return
         }
         
-        // Создаем URL для запроса
         let nextPage = lastLoadedPage + 1
-        
         let urlString = "https://api.unsplash.com/photos?page=\(nextPage)&per_page=\(perPage)"
+        
         guard let url = URL(string: urlString) else {
-            print("\(#file):\(#line)] \(#function) Invalid URL: \(urlString)") // Лог ошибок
+            print("\(#file):\(#line)] \(#function) Invalid URL: \(urlString)")
             return
         }
         
         var request = URLRequest(url: url)
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
-        let task = URLSession.shared.objectTask(for: request) { [weak self] (result: Result<[PhotoResult], Error>) in
-                   guard let self = self else { return }
-                   
-            defer {
-                self.task = nil
+        let task = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+            if let error = error {
+                print("\(#file):\(#line)] \(#function) Ошибка запроса: \(error)")
+                return
             }
             
-            switch result {
-                       case .success(let photoResults):
-                           // Преобразуем PhotoResult в Photo
-                           let newPhotos = photoResults.map { result in
-                               Photo(
-                                   id: result.id,
-                                   size: CGSize(width: result.width, height: result.height),
-                                   isLiked: result.likedByUser
-                               )
-                           }
-                           
-                           self.photos.append(contentsOf: newPhotos)
-                           self.lastLoadedPage = nextPage
-                           NotificationCenter.default.post(
+            if let httpResponse = response as? HTTPURLResponse {
+                print("\(#file):\(#line)] \(#function) Код ответа: \(httpResponse.statusCode)")
+            }
+            
+            if let data = data {
+                do {
+                    let decoder = JSONDecoder()
+                    decoder.keyDecodingStrategy = .useDefaultKeys // Используем дефолтную стратегию
+                    
+                    let photoResults = try decoder.decode([PhotoResult].self, from: data)
+                    DispatchQueue.main.async {
+                        let newPhotos = photoResults.map { result in
+                            Photo(
+                                id: result.id,
+                                size: CGSize(width: result.width, height: result.height),
+                                createdAt: self?.dateFormatter.date(from: result.createdAt), // Парсим дату
+                                welcomeDescription: result.description,
+                                thumbImageURL: result.urls.thumb,
+                                largeImageURL: result.urls.full,
+                                isLiked: result.likedByUser
+                            )
+                        }
+                        
+                        self?.photos.append(contentsOf: newPhotos)
+                        self?.lastLoadedPage = nextPage
+                        
+                        NotificationCenter.default.post(
                             name: ImagesListService.didChangeNotification,
-                               object: self,
-                               userInfo: nil
-                           )
-                           
-                       case .failure(let error):
-                           print("[\(#file):\(#line)] \(#function) Failed to fetch photos: \(error)")
-                       }
-                   }
-                   
-                   self.task = task
-                   task.resume()
-               }
-           }
-    
-    
-    //    let photos = try SnakeCaseJSONDecoder().decode([PhotoResult].self, from: jsonData)
-    
-    //    static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
-    
-//    func fetchPhotosNextPage(task: URLSessionTask?) {
-//        
-//        // Здесь получим страницу номер 1, если ещё не загружали ничего,
-//        // и следующую страницу (на единицу больше), если есть предыдущая загруженная страница
-////        let nextPage = (lastLoadedPage?.number ?? 0) + 1
-//    }
-//}
+                            object: self,
+                            userInfo: ["photos": newPhotos]
+                        )
+                        
+                        print("Загружено \(newPhotos.count) новых фото")
+                        newPhotos.forEach { photo in
+                            print("URL превью: \(photo.thumbImageURL)")
+                        }
+                    }
+                } catch {
+                    print("\(#file):\(#line)] \(#function) Ошибка декодирования: \(error)")
+                    if let dataString = String(data: data, encoding: .utf8) {
+                        print("Полученные данные: \(dataString)")
+                    }
+                }
+            }
+        }
+        
+        self.task = task
+        task.resume()
+    }
+}
