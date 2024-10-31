@@ -106,4 +106,53 @@ final class ImagesListService {
         self.task = task
         task.resume()
     }
+    
+    // MARK: - Change Like Status
+    
+    func changeLike(photoId: String, isLike: Bool, _ completion: @escaping (Result<Void, Error>) -> Void) {
+        
+        guard let token = storage.token else {
+            print("\(#file):\(#line)] \(#function) Токен отсутствует")
+            return
+        }
+        
+        // url для запроса лайков
+        let urlString = "https://api.unsplash.com/photos/\(photoId)/like"
+        guard let url = URL(string: urlString) else {
+            print("[\(#file):\(#line)] \(#function) Invalid URL: \(urlString)")
+            return
+        }
+        
+        // создаем запрос
+        var request = URLRequest(url: url)
+        request.httpMethod = isLike ? "POST" : "DELETE"
+        request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        
+        // делаем запрос
+        let task = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+            if let error = error {
+                DispatchQueue.main.async {
+                    completion(.failure(error))
+                }
+                return
+            }
+            if let httpResponse = response as? HTTPURLResponse {
+                let isSuccess = (200...299).contains(httpResponse.statusCode)
+                if isSuccess {
+                    if let index = self?.photos.firstIndex(where: { $0.id == photoId }) {
+                        self?.photos[index].isLiked = isLike
+                    }
+                    DispatchQueue.main.async {
+                        completion(.success(()))
+                    }
+                } else {
+                    print("Ошибка HTTP: \(httpResponse.statusCode)")
+                    DispatchQueue.main.async {
+                        completion(.failure(NetworkError.httpStatusCode(httpResponse.statusCode)))
+                    }
+                }
+            }
+        }
+        task.resume()
+    }
 }

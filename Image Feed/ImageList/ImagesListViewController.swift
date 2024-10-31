@@ -1,7 +1,7 @@
 import UIKit
 import Kingfisher
 
-final class ImagesListViewController: UIViewController {
+final class ImagesListViewController: UIViewController, ImagesListCellDelegate {
     private let showSingleImageSegueIdentifier: String = "ShowSingleImage"
     
     @IBOutlet private var tableView: UITableView!
@@ -114,6 +114,7 @@ extension ImagesListViewController: UITableViewDelegate {
         let photo = photos[indexPath.row]
         
         cell.cellImage.kf.indicatorType = .activity // Добавлен индикатор загрузки
+        cell.delegate = self
         
         if let imageURL = URL(string: photo.thumbImageURL) {
             cell.cellImage.kf.setImage(
@@ -128,5 +129,40 @@ extension ImagesListViewController: UITableViewDelegate {
         cell.dateLabel.text = dateFormatter.string(from: photo.createdAt ?? Date())
         let likeImage = photo.isLiked ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off")
         cell.likeButton.setImage(likeImage, for: .normal)
+    }
+    
+    func imagesListCellDidTapLike(_ cell: ImagesListCell) {
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        let photo = photos[indexPath.row]
+        
+        UIBlockingProgressHUD.show() // Показываем индикатор загрузки
+        
+        imageListService.changeLike(photoId: photo.id, isLike: !photo.isLiked) { [weak self] result in
+            UIBlockingProgressHUD.dismiss() // Скрываем индикатор
+            
+            guard let self = self else { return }
+            
+            switch result {
+            case .success:
+                cell.setIsLiked(!photo.isLiked)
+                self.photos = self.imageListService.photos // Обновляем локальный массив
+            case .failure(let error):
+                print("Ошибка лайка/дизлайка: \(error)")
+                self.showLikeErrorAlert()
+            }
+        }
+    }
+    
+    private func showLikeErrorAlert() {
+        let alert = UIAlertController(
+            title: "Ошибка",
+            message: "Не удалось поставить/убрать лайк",
+            preferredStyle: .alert
+        )
+        
+        let okAction = UIAlertAction(title: "OK", style: .default)
+        alert.addAction(okAction)
+        
+        present(alert, animated: true)
     }
 }
