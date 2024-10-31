@@ -25,12 +25,25 @@ final class ImagesListViewController: UIViewController, ImagesListCellDelegate {
         configurateTableView()
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+           if segue.identifier == showSingleImageSegueIdentifier {
+               guard
+                   let destination = segue.destination as? SingleImageViewController,
+                   let indexPath = sender as? IndexPath
+               else { return }
+               
+               let photo = photos[indexPath.row]
+               guard let fullImageURL = URL(string: photo.largeImageURL) else { return }
+               destination.setImageURL(fullImageURL)
+           }
+       }
+
+    
     // MARK: - Private Methods
     private func configurateTableView() {
         tableView.rowHeight = 200
         tableView.contentInset = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
         
-        // Добавлен observer для отслеживания изменений
         imagesListServiceObserver = NotificationCenter.default.addObserver(
             forName: ImagesListService.didChangeNotification,
             object: nil,
@@ -42,7 +55,6 @@ final class ImagesListViewController: UIViewController, ImagesListCellDelegate {
         imageListService.fetchPhotosNextPage()
     }
     
-    // Добавлен метод для анимированного обновления таблицы
     private func updateTableViewAnimated() {
         let oldCount = photos.count
         let newCount = imageListService.photos.count
@@ -61,16 +73,16 @@ final class ImagesListViewController: UIViewController, ImagesListCellDelegate {
         }
     }
     
-    // Добавлен метод для перезагрузки отдельной ячейки
     private func reloadRow(at indexPath: IndexPath) {
         tableView.reloadRows(at: [indexPath], with: .automatic)
     }
 }
 
 // MARK: - UITableViewDataSource
+
 extension ImagesListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return photos.count // Используем массив photos
+        return photos.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -86,8 +98,9 @@ extension ImagesListViewController: UITableViewDataSource {
 }
 
 // MARK: - UITableViewDelegate
+
 extension ImagesListViewController: UITableViewDelegate {
-    // Добавлен метод для подгрузки следующей страницы
+  
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row == photos.count - 1 {
             imageListService.fetchPhotosNextPage()
@@ -109,17 +122,20 @@ extension ImagesListViewController: UITableViewDelegate {
         return cellHeight
     }
     
-    // Добавлен метод конфигурации ячейки с использованием Kingfisher
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+          performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
+      }
+ 
     private func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
         let photo = photos[indexPath.row]
         
-        cell.cellImage.kf.indicatorType = .activity // Добавлен индикатор загрузки
+        cell.cellImage.kf.indicatorType = .activity
         cell.delegate = self
         
         if let imageURL = URL(string: photo.thumbImageURL) {
             cell.cellImage.kf.setImage(
                 with: imageURL,
-                placeholder: UIImage(named: "stub"), // Используем заглушку
+                placeholder: UIImage(named: "stub"),
                 options: [.transition(.fade(0.5))]
             ) { [weak self] _ in
                 self?.reloadRow(at: indexPath)
@@ -135,17 +151,16 @@ extension ImagesListViewController: UITableViewDelegate {
         guard let indexPath = tableView.indexPath(for: cell) else { return }
         let photo = photos[indexPath.row]
         
-        UIBlockingProgressHUD.show() // Показываем индикатор загрузки
+        UIBlockingProgressHUD.show()
         
         imageListService.changeLike(photoId: photo.id, isLike: !photo.isLiked) { [weak self] result in
-            UIBlockingProgressHUD.dismiss() // Скрываем индикатор
-            
+            UIBlockingProgressHUD.dismiss()
             guard let self = self else { return }
             
             switch result {
             case .success:
                 cell.setIsLiked(!photo.isLiked)
-                self.photos = self.imageListService.photos // Обновляем локальный массив
+                self.photos = self.imageListService.photos 
             case .failure(let error):
                 print("Ошибка лайка/дизлайка: \(error)")
                 self.showLikeErrorAlert()
