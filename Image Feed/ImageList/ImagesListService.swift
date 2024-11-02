@@ -20,13 +20,11 @@ final class ImagesListService {
     static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     
     // MARK: - Private Properties
-    private let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZ" // Формат для парсинга даты из API
-        formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
-        return formatter
-    }()
+    
+    private let dateFormatter: ISO8601DateFormatter = {
+          let formatter = ISO8601DateFormatter()
+          return formatter
+      }()
     
     // MARK: - Public Methods
     func fetchPhotosNextPage() {
