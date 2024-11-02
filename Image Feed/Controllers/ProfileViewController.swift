@@ -223,13 +223,22 @@ final class ProfileViewController: UIViewController {
     }
     
     private func updateAvatar() {
+        print("\(#file):\(#line)] \(#function) начало updateAvatar")
+        
         guard
                 let profileImageURL = ProfileImageService.shared.avatarURL,
                 let url = URL(string: profileImageURL)
-        else { return }
-        print("ProfileViewController: Avatar image URL: \(url)") // Лог ошибок
+        else {
+            print("\(#file):\(#line)] \(#function) нет URL для аватарки")
+            return
+        }
+        
+        print("\(#file):\(#line)] \(#function) пытаемся загрузить аватарку с URL: \(url)") // Лог ошибок
+        
         let processor = RoundCornerImageProcessor(cornerRadius: 20)
         avatarImageView.kf.indicatorType = .activity
         avatarImageView.kf.setImage(with: url, placeholder: UIImage(named: "placeholder.jpeg"), options: [.processor(processor)])
+        
+        print("ProfileViewController: URLService.avatarURL = \(String(describing: ProfileImageService.shared.avatarURL))")
     }
 }

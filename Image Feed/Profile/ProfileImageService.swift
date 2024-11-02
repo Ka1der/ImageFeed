@@ -21,6 +21,12 @@ final class ProfileImageService {
     private let urlSession: URLSession = .shared
     private let storage = OAuth2TokenStorage()
     
+    func setAvatarURL(_ url: String) {
+            avatarURL = url
+            print("ProfileImageService: установлен новый URL аватарки: \(url)")
+        }
+        
+    
     // MARK: - Public Properties
     static let didChangeNotification = Notification.Name(rawValue: "ProfileImageService.didChangeNotification")
     
