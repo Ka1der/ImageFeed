@@ -13,7 +13,7 @@ final class ProfileViewController: UIViewController {
     static let shared = ProfileViewController()
     private var profileImageServiceObserver: NSObjectProtocol?
     private let profileService = ProfileService.shared
-  
+    
     
     // MARK: - UI Elements
     
@@ -159,14 +159,14 @@ final class ProfileViewController: UIViewController {
             
             let splashViewController = SplashViewController()
             window.rootViewController = splashViewController
-         
+            
             UIView.transition(with: window,
-                                      duration: 0.3,
-                                      options: .transitionCrossDissolve,
-                                      animations: nil,
-                                      completion: nil)
-                      
-                      print("Пользователь успешно вышел из системы")
+                              duration: 0.3,
+                              options: .transitionCrossDissolve,
+                              animations: nil,
+                              completion: nil)
+            
+            print("Пользователь успешно вышел из системы")
         }
         yesTapAction.setValue(UIColor.blue, forKey: .init("titleTextColor"))
         
@@ -226,8 +226,8 @@ final class ProfileViewController: UIViewController {
         print("\(#file):\(#line)] \(#function) начало updateAvatar")
         
         guard
-                let profileImageURL = ProfileImageService.shared.avatarURL,
-                let url = URL(string: profileImageURL)
+            let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL)
         else {
             print("\(#file):\(#line)] \(#function) нет URL для аватарки")
             return

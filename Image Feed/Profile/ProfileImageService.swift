@@ -22,16 +22,16 @@ final class ProfileImageService {
     private let storage = OAuth2TokenStorage()
     
     func setAvatarURL(_ url: String) {
-            avatarURL = url
-            print("ProfileImageService: установлен новый URL аватарки: \(url)")
-        }
-        
+        avatarURL = url
+        print("ProfileImageService: установлен новый URL аватарки: \(url)")
+    }
+    
     
     // MARK: - Public Properties
     static let didChangeNotification = Notification.Name(rawValue: "ProfileImageService.didChangeNotification")
     
     // MARK: - Public Methods
-  func makeAvatarRequest(username: String) -> URLRequest? {
+    func makeAvatarRequest(username: String) -> URLRequest? {
         guard let url = URL(string: "users/\(username)", relativeTo: Constants.defaultBaseURL)
         else {
             print ("ProfileService: неправильный URL")
@@ -49,5 +49,5 @@ final class ProfileImageService {
         print("ProfileImageService: Создан запрос с токеном: \(token)") // Лог ошибок
         return request
     }
-
+    
 }

@@ -11,13 +11,13 @@ final class ImagesListService {
     // MARK: - Properties
     static let shared = ImagesListService()
     
+    static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
+    
     private(set) var photos: [Photo] = []
     private var lastLoadedPage: Int = 0
     private var task: URLSessionTask?
     private let perPage = 10
     private let storage = OAuth2TokenStorage()
-    
-    static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
     
     // MARK: - Private Properties
     
@@ -79,7 +79,12 @@ final class ImagesListService {
                         let photo = Photo(
                                 id: result.id,
                                 size: CGSize(width: result.width, height: result.height),
-                                createdAt: self?.dateFormatter.date(from: result.createdAt),
+                                createdAt: {
+                                    if let dateString = result.createdAt {
+                                        return self?.dateFormatter.date(from: dateString)
+                                    }
+                                    return nil
+                                } (),
                                 welcomeDescription: result.description,
                                 thumbImageURL: thumbURL,
                                 largeImageURL: largeURL,

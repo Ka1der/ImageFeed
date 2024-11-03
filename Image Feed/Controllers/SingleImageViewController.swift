@@ -55,30 +55,30 @@ final class SingleImageViewController: UIViewController {
     // MARK: - Public Methods
     
     func setImageURL(_ url: URL) {
-           largeImageURL = url
-       }
+        largeImageURL = url
+    }
     
     // MARK: - Private Methods
     
     private func loadLargeImage() {
-          guard let largeImageURL = largeImageURL else { return }
-          UIBlockingProgressHUD.show()
-          
-          imageView.kf.setImage(
-              with: largeImageURL,
-              placeholder: UIImage(named: "placeholder")) { [weak self] result in
-                  UIBlockingProgressHUD.dismiss()
-                  
-                  guard let self = self else { return }
-                  
-                  switch result {
-                  case .success(let imageResult):
-                      self.rescaleAndCenterImageInScrollView(image: imageResult.image)
-                  case .failure(let error):
-                      self.showError()
-                  }
-              }
-      }
+        guard let largeImageURL = largeImageURL else { return }
+        UIBlockingProgressHUD.show()
+        
+        imageView.kf.setImage(
+            with: largeImageURL,
+            placeholder: UIImage(named: "placeholder")) { [weak self] result in
+                UIBlockingProgressHUD.dismiss()
+                
+                guard let self = self else { return }
+                
+                switch result {
+                case .success(let imageResult):
+                    self.rescaleAndCenterImageInScrollView(image: imageResult.image)
+                case .failure(let error):
+                    self.showError()
+                }
+            }
+    }
     
     private func showError() {
         let alert = UIAlertController(
@@ -138,7 +138,7 @@ final class SingleImageViewController: UIViewController {
         scrollView.setContentOffset(CGPoint(x: x, y: y), animated: false)
     }
 }
-    
+
 
 // MARK: - UIScrollViewDelegate
 
@@ -148,7 +148,7 @@ extension SingleImageViewController: UIScrollViewDelegate {
     }
     
     func scrollViewDidZoom(_ scrollView: UIScrollView) {
-       
+        
         let offsetX = max((scrollView.bounds.width - scrollView.contentSize.width) * 0.5, 0)
         let offsetY = max((scrollView.bounds.height - scrollView.contentSize.height) * 0.5, 0)
         
