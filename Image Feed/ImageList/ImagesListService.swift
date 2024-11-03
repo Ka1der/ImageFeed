@@ -52,6 +52,7 @@ final class ImagesListService {
         let task = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
             if let error = error {
                 print("\(#file):\(#line)] \(#function) Ошибка запроса: \(error)")
+                self?.task = nil
                 return
             }
             
@@ -106,13 +107,17 @@ final class ImagesListService {
                         newPhotos.forEach { photo in
                             print("URL превью: \(photo.thumbImageURL)")
                         }
+                        self?.task = nil
                     }
                 } catch {
                     print("\(#file):\(#line)] \(#function) Ошибка декодирования: \(error)")
                     if let dataString = String(data: data, encoding: .utf8) {
                         print("Полученные данные: \(dataString)")
                     }
+                    self?.task = nil
                 }
+            } else {
+                self?.task = nil
             }
         }
         
