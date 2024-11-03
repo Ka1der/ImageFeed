@@ -7,7 +7,7 @@ final class ImagesListViewController: UIViewController, ImagesListCellDelegate {
     @IBOutlet private var tableView: UITableView!
     
     // MARK: - Свойства
-    var photos: [Photo] = [] // Массив фотографий
+    var photos: [Photo] = [] 
     
     private let imageListService = ImagesListService.shared
     private var imagesListServiceObserver: NSObjectProtocol?
@@ -33,8 +33,7 @@ final class ImagesListViewController: UIViewController, ImagesListCellDelegate {
                else { return }
                
                let photo = photos[indexPath.row]
-               guard let fullImageURL = URL(string: photo.largeImageURL) else { return }
-               destination.setImageURL(fullImageURL)
+               destination.setImageURL(photo.largeImageURL)
            }
        }
 
@@ -132,15 +131,13 @@ extension ImagesListViewController: UITableViewDelegate {
         cell.cellImage.kf.indicatorType = .activity
         cell.delegate = self
         
-        if let imageURL = URL(string: photo.thumbImageURL) {
             cell.cellImage.kf.setImage(
-                with: imageURL,
+                with: photo.thumbImageURL,
                 placeholder: UIImage(named: "stub"),
                 options: [.transition(.fade(0.5))]
             ) { [weak self] _ in
                 self?.reloadRow(at: indexPath)
             }
-        }
         
         cell.dateLabel.text = dateFormatter.string(from: photo.createdAt ?? Date())
         let likeImage = photo.isLiked ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off")
@@ -160,7 +157,7 @@ extension ImagesListViewController: UITableViewDelegate {
             switch result {
             case .success:
                 cell.setIsLiked(!photo.isLiked)
-                self.photos = self.imageListService.photos 
+                self.photos = self.imageListService.photos
             case .failure(let error):
                 print("Ошибка лайка/дизлайка: \(error)")
                 self.showLikeErrorAlert()

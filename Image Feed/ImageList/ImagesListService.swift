@@ -62,20 +62,30 @@ final class ImagesListService {
             if let data = data {
                 do {
                     let decoder = JSONDecoder()
-                    decoder.keyDecodingStrategy = .useDefaultKeys // Используем дефолтную стратегию
+                    decoder.keyDecodingStrategy = .useDefaultKeys
                     
                     let photoResults = try decoder.decode([PhotoResult].self, from: data)
                     DispatchQueue.main.async {
-                        let newPhotos = photoResults.map { result in
-                            Photo(
+                        var newPhotos: [Photo] = []
+                        for result in photoResults {
+                            guard
+                                let thumbURL = URL(string: result.urls.thumb),
+                                let largeURL = URL(string: result.urls.full)
+                            else {
+                                print("\(#file):\(#line)] \(#function) Ошибка создания URL для фото id: \(result.id)")
+                                continue
+                            }
+                        
+                        let photo = Photo(
                                 id: result.id,
                                 size: CGSize(width: result.width, height: result.height),
-                                createdAt: self?.dateFormatter.date(from: result.createdAt), // Парсим дату
+                                createdAt: self?.dateFormatter.date(from: result.createdAt),
                                 welcomeDescription: result.description,
-                                thumbImageURL: result.urls.thumb,
-                                largeImageURL: result.urls.full,
+                                thumbImageURL: thumbURL,
+                                largeImageURL: largeURL,
                                 isLiked: result.likedByUser
                             )
+                        newPhotos.append(photo)
                         }
                         
                         self?.photos.append(contentsOf: newPhotos)
@@ -114,19 +124,16 @@ final class ImagesListService {
             return
         }
         
-        // url для запроса лайков
         let urlString = "https://api.unsplash.com/photos/\(photoId)/like"
         guard let url = URL(string: urlString) else {
             print("[\(#file):\(#line)] \(#function) Invalid URL: \(urlString)")
             return
         }
         
-        // создаем запрос
         var request = URLRequest(url: url)
         request.httpMethod = isLike ? "POST" : "DELETE"
         request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
         
-        // делаем запрос
         let task = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
             if let error = error {
                 DispatchQueue.main.async {
