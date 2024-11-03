@@ -17,6 +17,9 @@ final class ImagesListCell: UITableViewCell {
     override func prepareForReuse() {
         super.prepareForReuse()
         cellImage.kf.cancelDownloadTask()
+        cellImage.image = nil
+        dateLabel.text = nil
+        setIsLiked(false)
     }
     
     @IBAction func likeButtonTapped(_ sender: Any) {

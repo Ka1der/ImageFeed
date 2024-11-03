@@ -128,20 +128,34 @@ extension ImagesListViewController: UITableViewDelegate {
     private func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
         let photo = photos[indexPath.row]
         
+        cell.cellImage.kf.cancelDownloadTask()
+        cell.cellImage.image = nil
+        
         cell.cellImage.kf.indicatorType = .activity
         cell.delegate = self
         
-            cell.cellImage.kf.setImage(
-                with: photo.thumbImageURL,
-                placeholder: UIImage(named: "stub"),
-                options: [.transition(.fade(0.5))]
-            ) { [weak self] _ in
-                self?.reloadRow(at: indexPath)
-            }
-        
         cell.dateLabel.text = dateFormatter.string(from: photo.createdAt ?? Date())
-        let likeImage = photo.isLiked ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off")
-        cell.likeButton.setImage(likeImage, for: .normal)
+        cell.setIsLiked(photo.isLiked)
+        
+        let processor = RoundCornerImageProcessor(cornerRadius: 16)
+        
+        cell.cellImage.kf.setImage(
+            with: photo.thumbImageURL,
+            placeholder: UIImage(named: "stub"),
+            options: [
+                .processor(processor),
+                .transition(.fade(0.25)),
+                .cacheOriginalImage,
+            ]
+        ) { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success:
+                self.tableView.reloadRows(at: [indexPath], with: .automatic)
+            case .failure:
+                print("Ошибка загрузки изображения для ячейки \(indexPath.row)")
+            }
+        }
     }
     
     func imagesListCellDidTapLike(_ cell: ImagesListCell) {
@@ -156,8 +170,10 @@ extension ImagesListViewController: UITableViewDelegate {
             
             switch result {
             case .success:
-                cell.setIsLiked(!photo.isLiked)
                 self.photos = self.imageListService.photos
+                if let visibleCell = self.tableView.cellForRow(at: indexPath) as? ImagesListCell {
+                    visibleCell.setIsLiked(self.photos[indexPath.row].isLiked)
+                }
             case .failure(let error):
                 print("Ошибка лайка/дизлайка: \(error)")
                 self.showLikeErrorAlert()
