@@ -150,6 +150,9 @@ final class ProfileViewController: UIViewController {
             style: .destructive)
         { [weak self] _ in
             guard let self = self else { return }
+            
+            HTTPCookieStorage.shared.removeCookies(since: .distantPast)
+            
             self.tokenStorage.token = nil
             
             Kingfisher.ImageCache.default.clearMemoryCache()
