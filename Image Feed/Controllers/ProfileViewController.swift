@@ -7,6 +7,7 @@
 
 import UIKit
 import Kingfisher
+import WebKit
 
 final class ProfileViewController: UIViewController {
     
@@ -150,6 +151,14 @@ final class ProfileViewController: UIViewController {
             style: .destructive)
         { [weak self] _ in
             guard let self = self else { return }
+            
+            if let websiteDataTypes = WKWebsiteDataStore.allWebsiteDataTypes() as? Set<String> {
+                        WKWebsiteDataStore.default().removeData(
+                            ofTypes: websiteDataTypes,
+                            modifiedSince: .distantPast,
+                            completionHandler: {}
+                        )
+                    }
             
             HTTPCookieStorage.shared.removeCookies(since: .distantPast)
             
