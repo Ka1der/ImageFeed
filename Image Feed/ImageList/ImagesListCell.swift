@@ -13,7 +13,16 @@ final class ImagesListCell: UITableViewCell {
     @IBOutlet var likeButton: UIButton!
     @IBOutlet var dateLabel: UILabel!
     
-    // Добавлен метод для отмены загрузки изображения при переиспользовании ячейки
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+           super.init(style: style, reuseIdentifier: reuseIdentifier)
+           selectionStyle = .none
+       }
+       
+       required init?(coder: NSCoder) {
+           super.init(coder: coder)
+           selectionStyle = .none
+       }
+    
     override func prepareForReuse() {
         super.prepareForReuse()
         cellImage.kf.cancelDownloadTask()
