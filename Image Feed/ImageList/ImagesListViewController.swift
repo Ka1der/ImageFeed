@@ -7,7 +7,7 @@ final class ImagesListViewController: UIViewController, ImagesListCellDelegate {
     @IBOutlet private var tableView: UITableView!
     
     // MARK: - Свойства
-    var photos: [Photo] = [] 
+    var photos: [Photo] = []
     
     private let imageListService = ImagesListService.shared
     private var imagesListServiceObserver: NSObjectProtocol?
@@ -26,17 +26,17 @@ final class ImagesListViewController: UIViewController, ImagesListCellDelegate {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-           if segue.identifier == showSingleImageSegueIdentifier {
-               guard
-                   let destination = segue.destination as? SingleImageViewController,
-                   let indexPath = sender as? IndexPath
-               else { return }
-               
-               let photo = photos[indexPath.row]
-               destination.setImageURL(photo.largeImageURL)
-           }
-       }
-
+        if segue.identifier == showSingleImageSegueIdentifier {
+            guard
+                let destination = segue.destination as? SingleImageViewController,
+                let indexPath = sender as? IndexPath
+            else { return }
+            
+            let photo = photos[indexPath.row]
+            destination.setImageURL(photo.largeImageURL)
+        }
+    }
+    
     
     // MARK: - Private Methods
     private func configurateTableView() {
@@ -99,7 +99,7 @@ extension ImagesListViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate
 
 extension ImagesListViewController: UITableViewDelegate {
-  
+    
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.row == photos.count - 1 {
             imageListService.fetchPhotosNextPage()
@@ -122,9 +122,9 @@ extension ImagesListViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-          performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
-      }
- 
+        performSegue(withIdentifier: showSingleImageSegueIdentifier, sender: indexPath)
+    }
+    
     private func configCell(for cell: ImagesListCell, with indexPath: IndexPath) {
         let photo = photos[indexPath.row]
         
@@ -147,15 +147,7 @@ extension ImagesListViewController: UITableViewDelegate {
                 .transition(.fade(0.25)),
                 .cacheOriginalImage,
             ]
-        ) { [weak self] result in
-            guard let self = self else { return }
-            switch result {
-            case .success:
-                self.tableView.reloadRows(at: [indexPath], with: .automatic)
-            case .failure:
-                print("Ошибка загрузки изображения для ячейки \(indexPath.row)")
-            }
-        }
+        )
     }
     
     func imagesListCellDidTapLike(_ cell: ImagesListCell) {
