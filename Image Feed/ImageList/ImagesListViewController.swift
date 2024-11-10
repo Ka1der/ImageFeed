@@ -7,7 +7,7 @@ final class ImagesListViewController: UIViewController, ImagesListCellDelegate {
     @IBOutlet private var tableView: UITableView!
     
     // MARK: - Свойства
-    var photos: [Photo] = []
+ private var photos: [Photo] = []
     
     private let imageListService = ImagesListService.shared
     private var imagesListServiceObserver: NSObjectProtocol?

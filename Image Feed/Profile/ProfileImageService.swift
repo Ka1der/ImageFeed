@@ -17,6 +17,9 @@ final class ProfileImageService {
     // MARK: - Private Properties
     private(set) var avatarURL: String?
     private var task: URLSessionTask?
+    deinit {
+        task?.cancel()
+    }
     private let decoder = SnakeCaseJSONDecoder()
     private let urlSession: URLSession = .shared
     private let storage = OAuth2TokenStorage()

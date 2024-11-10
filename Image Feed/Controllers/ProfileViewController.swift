@@ -218,24 +218,11 @@ final class ProfileViewController: UIViewController {
         }
     }
     
-    private func updateProfileDetalis() {
-        guard let profile = profileService.profile else {
-            print("\(#file):\(#line)] \(#function) Профиль отсутствует") // Лог ошибок
-            return
-        }
-        
-        nameLabel.text = profile.name
-        usernameLabel.text = profile.loginName
-        messageLabel.text = profile.bio
-        
-        print("\(#file):\(#line)] \(#function) UI обновлен с данными профиля") // Лог ошибок
-    }
-    
     private func updateUI(with profile: ProfileModels.Profile) {
         nameLabel.text = profile.name
         usernameLabel.text = profile.loginName
         messageLabel.text = profile.bio
-        print("ProfileViewController: UI обновлен с данными профиля") // Лог ошибок
+        print("\(#file):\(#line)] \(#function) UI обновлен с данными профиля") // Лог ошибок
     }
     
     private func updateAvatar() {

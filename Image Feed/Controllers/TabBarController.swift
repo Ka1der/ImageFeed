@@ -12,12 +12,12 @@ final class TabBarController: UITabBarController {
     // MARK: - Lifecycle
     override func awakeFromNib() {
         super.awakeFromNib()
-        configurateviewControllers()
+        configurateViewControllers()
         
     }
     
     // MARK: - Private Methods
-    private func configurateviewControllers() {
+    private func configurateViewControllers() {
     
         let storyboard = UIStoryboard(name: "Main", bundle: .main)
         let imagesListViewController = storyboard.instantiateViewController(
