@@ -280,7 +280,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="r2W-Ve-dCo"/>
                     <connections>
-                        <outlet property="UIProgressView" destination="U9T-O6-d7N" id="J0i-fj-yiB"/>
+                        <outlet property="progressView" destination="U9T-O6-d7N" id="pn4-bJ-QOp"/>
                         <outlet property="webView" destination="ocN-EQ-47I" id="zzo-oL-TFZ"/>
                     </connections>
                 </viewController>
