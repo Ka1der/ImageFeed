@@ -9,12 +9,10 @@ import UIKit
 import Kingfisher
 import WebKit
 
-final class ProfileViewController: UIViewController {
+final class ProfileViewController: UIViewController & ProfileViewControllerProtocol {
     
-    static let shared = ProfileViewController()
-    private var profileImageServiceObserver: NSObjectProtocol?
-    private let profileService = ProfileService.shared
-    
+    var presenter: ProfilePresenterProtocol?
+    var profilePresenter = ProfilePresenter()
     
     // MARK: - UI Elements
     
@@ -65,44 +63,64 @@ final class ProfileViewController: UIViewController {
     
     private let tokenStorage = OAuth2TokenStorage()
     
+    
+    
     // MARK: - Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        
-        exitButton.addTarget(self, action: #selector (didTapLogOutButton), for: .touchUpInside)
-        
-        profileImageServiceObserver = NotificationCenter.default.addObserver(
-            forName: ProfileImageService.didChangeNotification,
-            object: nil,
-            queue: .main
-        ) { [weak self] _ in
-            guard let self = self else { return }
-            self.updateAvatar()
-        }
-        updateAvatar()
-    }
-    deinit {
-        if let observer = profileImageServiceObserver {
-            NotificationCenter.default.removeObserver(observer)
-        }
+        setupActions()
+        presenter?.viewDidLoad()
     }
     
-    // MARK: - Setup UI
+    // MARK: - Private Setup Methods
     
     private func setupUI() {
-        
         view.backgroundColor = UIColor(named: "background")
-        
-        view.addSubview(avatarImageView)
-        view.addSubview(nameLabel)
-        view.addSubview(usernameLabel)
-        view.addSubview(messageLabel)
-        view.addSubview(exitButton)
-        
+        [avatarImageView, nameLabel, usernameLabel, messageLabel, exitButton].forEach {
+            view.addSubview($0)
+        }
         setupConstraints()
-        updateProfile()
+    }
+    
+    private func setupActions() {
+        exitButton.addTarget(self, action: #selector(profilePresenter.didTapLogOutButton), for: .touchUpInside)
+    }
+    
+    // MARK: - ProfileViewControllerProtocol
+    
+    func updateProfileDetails(profile: ProfileModels.Profile) {
+        nameLabel.text = profile.name
+        usernameLabel.text = profile.loginName
+        messageLabel.text = profile.bio
+    }
+    
+    func updateAvatar(url: URL?) {
+        guard let url = url else { return }
+        let processor = RoundCornerImageProcessor(cornerRadius: 20)
+        avatarImageView.kf.setImage(
+            with: url,
+            placeholder: UIImage(named: "placeholder"),
+            options: [.processor(processor)]
+        )
+    }
+    
+    func showLogoutAlert() {
+        let alert = UIAlertController(
+            title: "Пока, пока!",
+            message: "Уверены что хотите выйти?",
+            preferredStyle: .alert
+        )
+        
+        let yesAction = UIAlertAction(title: "Да", style: .destructive) { [weak self] _ in
+            self?.presenter?.performLogout()
+        }
+        let noAction = UIAlertAction(title: "Нет", style: .cancel)
+        
+        alert.addAction(yesAction)
+        alert.addAction(noAction)
+        present(alert, animated: true)
     }
     
     // MARK: - Setup Constrains
@@ -137,111 +155,5 @@ final class ProfileViewController: UIViewController {
             exitButton.widthAnchor.constraint(equalToConstant: (24)),
             exitButton.heightAnchor.constraint(equalToConstant: (24))
         ])
-    }
-    // MARK: - Actions
-    
-    @objc private func didTapLogOutButton() {
-        let alertController = UIAlertController(
-              title: "Пока, пока!",
-              message: "Уверены что хотите выйти?",
-              preferredStyle: .alert)
-          
-          // MARK: - Изменено: используем стиль .default вместо .cancel
-          let noTapAction = UIAlertAction(
-              title: "Нет",
-              style: .default) // Изменили стиль
-          { _ in
-              print("Пользователь отменил выход")
-          }
-          noTapAction.setValue(UIColor(named: "YPBlue"), forKey: .init("titleTextColor"))
-          
-          // MARK: - Изменено: используем стиль .cancel вместо .destructive
-          let yesTapAction = UIAlertAction(
-              title: "Да",
-              style: .default) 
-          { [weak self] _ in
-              guard let self = self else { return }
-              
-              if let websiteDataTypes = WKWebsiteDataStore.allWebsiteDataTypes() as? Set<String> {
-                  WKWebsiteDataStore.default().removeData(
-                      ofTypes: websiteDataTypes,
-                      modifiedSince: .distantPast,
-                      completionHandler: {}
-                  )
-              }
-              
-              HTTPCookieStorage.shared.removeCookies(since: .distantPast)
-              
-              self.tokenStorage.token = nil
-              
-              Kingfisher.ImageCache.default.clearMemoryCache()
-              Kingfisher.ImageCache.default.clearDiskCache()
-              
-              guard let window = UIApplication.shared.windows.first else { return }
-              
-              let splashViewController = SplashViewController()
-              window.rootViewController = splashViewController
-              
-              UIView.transition(with: window,
-                               duration: 0.3,
-                               options: .transitionCrossDissolve,
-                               animations: nil,
-                               completion: nil)
-              
-              print("Пользователь успешно вышел из системы")
-          }
-          yesTapAction.setValue(UIColor(named: "YPBlue"), forKey: .init("titleTextColor"))
-
-          alertController.addAction(yesTapAction)
-          alertController.addAction(noTapAction)
-          
-          present(alertController, animated: true, completion: nil)
-      }
-
-    private func updateProfile() {
-        guard let token = tokenStorage.token else {
-            print("\(#file):\(#line)] \(#function) Токен отсутствует") // Лог ошибок
-            return
-        }
-        
-        profileService.fetchProfile(token) { [weak self] result in
-            guard let self = self else { return }
-            
-            DispatchQueue.main.async {
-                switch result {
-                case .success(let profile):
-                    self.updateUI(with: profile)
-                case .failure(let error):
-                    print("\(#file):\(#line)] \(#function) Ошибка при получении профиля - \(error.localizedDescription)") // Лог ошибок
-                }
-            }
-        }
-    }
-    
-    private func updateUI(with profile: ProfileModels.Profile) {
-        nameLabel.text = profile.name
-        usernameLabel.text = profile.loginName
-        messageLabel.text = profile.bio
-        print("\(#file):\(#line)] \(#function) UI обновлен с данными профиля") // Лог ошибок
-    }
-    
-    private func updateAvatar() {
-        print("\(#file):\(#line)] \(#function) начало updateAvatar")
-        
-        guard
-            let profileImageURL = ProfileImageService.shared.avatarURL,
-            let url = URL(string: profileImageURL)
-        else {
-            print("\(#file):\(#line)] \(#function) нет URL для аватарки")
-            return
-        }
-        
-        print("\(#file):\(#line)] \(#function) пытаемся загрузить аватарку с URL: \(url)") // Лог ошибок
-        
-        let processor = RoundCornerImageProcessor(cornerRadius: 20)
-        avatarImageView.kf.indicatorType = .activity
-        avatarImageView.kf.setImage(with: url, placeholder: UIImage(named: "placeholder.jpeg"), options: [.processor(processor)])
-        
-        print("ProfileViewController: URLService.avatarURL = \(String(describing: ProfileImageService.shared.avatarURL))")
     }
 }

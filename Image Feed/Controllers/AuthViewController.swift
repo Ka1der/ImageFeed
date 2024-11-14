@@ -52,6 +52,7 @@ final class AuthViewController: UIViewController, WebViewViewControllerDelegate 
     }
     
     // MARK: - Private Methods
+    
     private func showAlert(in viewController: UIViewController) {
         let alert = UIAlertController(title: "Что-то пошло не так(", message: "Не удалось войти в систему", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
@@ -59,6 +60,7 @@ final class AuthViewController: UIViewController, WebViewViewControllerDelegate 
     }
     
     // MARK: - WebViewViewControllerDelegate
+    
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
         UIBlockingProgressHUD.show()
         delegate?.authViewController(self, didAuthenticateWithCode: code)
