@@ -7,13 +7,14 @@
 
 import UIKit
 import Kingfisher
+import WebKit
 
 final class ProfileViewController: UIViewController {
     
     static let shared = ProfileViewController()
     private var profileImageServiceObserver: NSObjectProtocol?
     private let profileService = ProfileService.shared
-  
+    
     
     // MARK: - UI Elements
     
@@ -141,32 +142,65 @@ final class ProfileViewController: UIViewController {
     
     @objc private func didTapLogOutButton() {
         let alertController = UIAlertController(
-            title: "Пока, пока!",
-            message: "Уверены что хотите выйти?",
-            preferredStyle: .alert)
-        
-        let yesTapAction = UIAlertAction(
-            title: "Да",
-            style: .destructive)
-        { _ in print("Пользватель вышел")
-        }
-        yesTapAction.setValue(UIColor.blue, forKey: .init("titleTextColor"))
-        
-        let noTapAction = UIAlertAction(
-            title: "Нет",
-            style: .cancel)
-        {_ in print("Пользователь отменил выход")
-        }
-        noTapAction.setValue(UIColor.blue, forKey: .init("titleTextColor"))
-        
-        alertController.addAction(yesTapAction)
-        alertController.addAction(noTapAction)
-        present(alertController, animated: true, completion: nil)
-    }
-    
+              title: "Пока, пока!",
+              message: "Уверены что хотите выйти?",
+              preferredStyle: .alert)
+          
+          // MARK: - Изменено: используем стиль .default вместо .cancel
+          let noTapAction = UIAlertAction(
+              title: "Нет",
+              style: .default) // Изменили стиль
+          { _ in
+              print("Пользователь отменил выход")
+          }
+          noTapAction.setValue(UIColor(named: "YPBlue"), forKey: .init("titleTextColor"))
+          
+          // MARK: - Изменено: используем стиль .cancel вместо .destructive
+          let yesTapAction = UIAlertAction(
+              title: "Да",
+              style: .default) 
+          { [weak self] _ in
+              guard let self = self else { return }
+              
+              if let websiteDataTypes = WKWebsiteDataStore.allWebsiteDataTypes() as? Set<String> {
+                  WKWebsiteDataStore.default().removeData(
+                      ofTypes: websiteDataTypes,
+                      modifiedSince: .distantPast,
+                      completionHandler: {}
+                  )
+              }
+              
+              HTTPCookieStorage.shared.removeCookies(since: .distantPast)
+              
+              self.tokenStorage.token = nil
+              
+              Kingfisher.ImageCache.default.clearMemoryCache()
+              Kingfisher.ImageCache.default.clearDiskCache()
+              
+              guard let window = UIApplication.shared.windows.first else { return }
+              
+              let splashViewController = SplashViewController()
+              window.rootViewController = splashViewController
+              
+              UIView.transition(with: window,
+                               duration: 0.3,
+                               options: .transitionCrossDissolve,
+                               animations: nil,
+                               completion: nil)
+              
+              print("Пользователь успешно вышел из системы")
+          }
+          yesTapAction.setValue(UIColor(named: "YPBlue"), forKey: .init("titleTextColor"))
+
+          alertController.addAction(yesTapAction)
+          alertController.addAction(noTapAction)
+          
+          present(alertController, animated: true, completion: nil)
+      }
+
     private func updateProfile() {
         guard let token = tokenStorage.token else {
-            print("ProfileViewController: Токен отсутствует") // Лог ошибок
+            print("\(#file):\(#line)] \(#function) Токен отсутствует") // Лог ошибок
             return
         }
         
@@ -178,7 +212,7 @@ final class ProfileViewController: UIViewController {
                 case .success(let profile):
                     self.updateUI(with: profile)
                 case .failure(let error):
-                    print("ProfileViewController: Ошибка при получении профиля - \(error.localizedDescription)") // Лог ошибок
+                    print("\(#file):\(#line)] \(#function) Ошибка при получении профиля - \(error.localizedDescription)") // Лог ошибок
                 }
             }
         }
@@ -186,7 +220,7 @@ final class ProfileViewController: UIViewController {
     
     private func updateProfileDetalis() {
         guard let profile = profileService.profile else {
-            print("ProfileViewController: Профиль отсутствует") // Лог ошибок
+            print("\(#file):\(#line)] \(#function) Профиль отсутствует") // Лог ошибок
             return
         }
         
@@ -194,7 +228,7 @@ final class ProfileViewController: UIViewController {
         usernameLabel.text = profile.loginName
         messageLabel.text = profile.bio
         
-        print("ProfileViewController: UI обновлен с данными профиля") // Лог ошибок
+        print("\(#file):\(#line)] \(#function) UI обновлен с данными профиля") // Лог ошибок
     }
     
     private func updateUI(with profile: ProfileModels.Profile) {
@@ -205,13 +239,22 @@ final class ProfileViewController: UIViewController {
     }
     
     private func updateAvatar() {
+        print("\(#file):\(#line)] \(#function) начало updateAvatar")
+        
         guard
-                let profileImageURL = ProfileImageService.shared.avatarURL,
-                let url = URL(string: profileImageURL)
-        else { return }
-        print("ProfileViewController: Avatar image URL: \(url)") // Лог ошибок
+            let profileImageURL = ProfileImageService.shared.avatarURL,
+            let url = URL(string: profileImageURL)
+        else {
+            print("\(#file):\(#line)] \(#function) нет URL для аватарки")
+            return
+        }
+        
+        print("\(#file):\(#line)] \(#function) пытаемся загрузить аватарку с URL: \(url)") // Лог ошибок
+        
         let processor = RoundCornerImageProcessor(cornerRadius: 20)
         avatarImageView.kf.indicatorType = .activity
         avatarImageView.kf.setImage(with: url, placeholder: UIImage(named: "placeholder.jpeg"), options: [.processor(processor)])
+        
+        print("ProfileViewController: URLService.avatarURL = \(String(describing: ProfileImageService.shared.avatarURL))")
     }
 }

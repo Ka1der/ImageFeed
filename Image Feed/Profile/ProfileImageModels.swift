@@ -17,6 +17,7 @@ final class ProfileImageModels {
     private let makeAvatarRequestAccess = ProfileImageService.shared.makeAvatarRequest
     private let urlSession: URLSession = .shared
     private(set) var avatarURL: String?
+
     
     // MARK: - Models
     struct UserResult: Codable {
@@ -37,7 +38,9 @@ final class ProfileImageModels {
             switch result {
             case .success(let userResult):
                 if let profileImage = userResult.profileImage?["large"] {
+                    print("ProfileImageModels: сохраняем URL \(profileImage) в ProfileImageService")
                     self.avatarURL = profileImage
+                    ProfileImageService.shared.setAvatarURL(profileImage)
                     completion(.success(profileImage))
                     print("ProfileImageService: Успешно получен URL для аватарки: \(profileImage)") // Лог ошибок
                     NotificationCenter.default.post(
