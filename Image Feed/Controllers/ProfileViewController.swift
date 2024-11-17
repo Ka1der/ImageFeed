@@ -82,10 +82,16 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
             view.addSubview($0)
         }
         setupConstraints()
+        
+        exitButton.accessibilityLabel = "log out button"
     }
     
     private func setupActions() {
-        exitButton.addTarget(self, action: #selector(profilePresenter.didTapLogOutButton), for: .touchUpInside)
+        exitButton.addTarget(self, action: #selector(didTapLogOutButton), for: .touchUpInside)
+    }
+    
+    @objc func didTapLogOutButton() {
+        presenter?.logout()
     }
     
     // MARK: - ProfileViewControllerProtocol
@@ -118,11 +124,14 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
         }
         let noAction = UIAlertAction(title: "Нет", style: .cancel)
         
+        yesAction.setValue(UIColor(named: "YPBlue"), forKey: "titleTextColor")
+           noAction.setValue(UIColor(named: "YPBlue"), forKey: "titleTextColor")
+        
         alert.addAction(yesAction)
         alert.addAction(noAction)
         present(alert, animated: true)
     }
-    
+
     // MARK: - Setup Constrains
     
     private func setupConstraints() {

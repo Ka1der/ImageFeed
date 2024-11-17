@@ -39,5 +39,19 @@ final class ImagesListCell: UITableViewCell {
     func setIsLiked(_ isLiked: Bool) {
         let likeImage = isLiked ? UIImage(named: "like_button_on") : UIImage(named: "like_button_off")
         likeButton.setImage(likeImage, for: .normal)
+        
+        likeButton.accessibilityIdentifier = "likeButton"
+           likeButton.accessibilityValue = isLiked ? "liked" : "unliked"
     }
+    
+    override func layoutSubviews() {
+            super.layoutSubviews()
+            
+            // Обеспечиваем минимальный размер области касания
+            if likeButton.frame.width < 44 {
+                let x = likeButton.frame.origin.x
+                let y = likeButton.frame.origin.y
+                likeButton.frame = CGRect(x: x, y: y, width: 44, height: 44)
+            }
+        }
 }

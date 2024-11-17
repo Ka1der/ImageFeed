@@ -35,6 +35,10 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
     // MARK: - Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        view.accessibilityIdentifier = "WebViewViewController"
+        webView.accessibilityIdentifier = "WebViewViewController"
+        
         webView.navigationDelegate = self
         
         webView.addObserver(

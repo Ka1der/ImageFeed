@@ -9,8 +9,6 @@ import Foundation
 import Kingfisher
 import WebKit
 
-// MARK: - ProfilePresenter.swift
-
 final class ProfilePresenter: ProfilePresenterProtocol {
     weak var view: ProfileViewControllerProtocol?
     let profileService: ProfileService
@@ -85,9 +83,5 @@ final class ProfilePresenter: ProfilePresenterProtocol {
                 }
             }
         }
-    }
-    
-    @objc func didTapLogOutButton() {
-        logout()
     }
 }

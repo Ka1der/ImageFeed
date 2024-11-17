@@ -56,6 +56,7 @@ final class ProfileService {
     }
     
     // MARK: - Private Methods
+    
  private func makeRequest(token: String) -> URLRequest? {
         guard let url = URL(string: "me", relativeTo: Constants.defaultBaseURL)
         else {
