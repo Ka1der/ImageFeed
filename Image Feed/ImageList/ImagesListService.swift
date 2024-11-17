@@ -8,7 +8,9 @@
 import Foundation
 
 final class ImagesListService {
+    
     // MARK: - Properties
+    
     static let shared = ImagesListService()
     
     static let didChangeNotification = Notification.Name(rawValue: "ImagesListServiceDidChange")
@@ -22,11 +24,12 @@ final class ImagesListService {
     // MARK: - Private Properties
     
     private let dateFormatter: ISO8601DateFormatter = {
-          let formatter = ISO8601DateFormatter()
-          return formatter
-      }()
+        let formatter = ISO8601DateFormatter()
+        return formatter
+    }()
     
     // MARK: - Public Methods
+    
     func fetchPhotosNextPage() {
         guard task == nil else {
             print("[\(#file):\(#line)] \(#function) Фотографии уже загружаются")
@@ -76,8 +79,8 @@ final class ImagesListService {
                                 print("\(#file):\(#line)] \(#function) Ошибка создания URL для фото id: \(result.id)")
                                 continue
                             }
-                        
-                        let photo = Photo(
+                            
+                            let photo = Photo(
                                 id: result.id,
                                 size: CGSize(width: result.width, height: result.height),
                                 createdAt: {
@@ -91,7 +94,7 @@ final class ImagesListService {
                                 largeImageURL: largeURL,
                                 isLiked: result.likedByUser
                             )
-                        newPhotos.append(photo)
+                            newPhotos.append(photo)
                         }
                         
                         self?.photos.append(contentsOf: newPhotos)

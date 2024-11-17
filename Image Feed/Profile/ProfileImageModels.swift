@@ -10,22 +10,26 @@ import UIKit
 final class ProfileImageModels {
     
     // MARK: - Singleton
+    
     static let shared = ProfileImageModels()
     private init() {}
-   
+    
     // MARK: - Private Properties
+    
     private let makeAvatarRequestAccess = ProfileImageService.shared.makeAvatarRequest
     private let urlSession: URLSession = .shared
     private(set) var avatarURL: String?
-
+    
     
     // MARK: - Models
+    
     struct UserResult: Codable {
         let profileImage: [String: String]?
     }
     
     // MARK: - Public Methods
-   func fetchProfileImageURL(username: String, in viewController: UIViewController, _ completion: @escaping (Result<String, Error>) -> Void) {
+    
+    func fetchProfileImageURL(username: String, in viewController: UIViewController, _ completion: @escaping (Result<String, Error>) -> Void) {
         
         guard let request = makeAvatarRequestAccess(username) else {
             print("ProfileImageService: Невозможно создать запрос.")

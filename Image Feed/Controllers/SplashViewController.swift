@@ -42,11 +42,8 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         view.addSubview(splashScreenLogo)
-        
         setupCostraints()
-        
     }
     
     override func viewDidAppear(_ animated: Bool) {
@@ -110,7 +107,7 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
                     switch imageResult {
                     case .success(let url):
                         print("SplashViewController: URL изображения профиля: \(url)") // Лог успешного получения URL
-
+                        
                     case .failure(let error):
                         print("SplashViewController: Ошибка получения URL изображения профиля: \(error.localizedDescription)") // Лог ошибки
                     }
@@ -134,7 +131,7 @@ final class SplashViewController: UIViewController, AuthViewControllerDelegate {
         
         let okAction = UIAlertAction(title: "OK", style: .default) { [weak self] _ in
             self?.performSegue(withIdentifier: SplashViewControllerConstants.showAuthenticationScreenSegueIdentifier, sender: nil)
-                }
+        }
         alert.addAction(okAction)
         present(alert, animated: true, completion: nil)
     }

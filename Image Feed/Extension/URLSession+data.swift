@@ -16,6 +16,7 @@ enum NetworkError: Error {
 }
 
 // MARK: -  Обработка HTTP-статуса и ошибок
+
 extension URLSession {
     
     func data(

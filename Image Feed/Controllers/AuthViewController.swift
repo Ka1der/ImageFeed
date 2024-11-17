@@ -9,34 +9,46 @@ import UIKit
 import ProgressHUD
 
 // MARK: - Protocols
+
 protocol AuthViewControllerDelegate: AnyObject {
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String)
     func didAuthenticate(_ vc: AuthViewController)
 }
-
 final class AuthViewController: UIViewController, WebViewViewControllerDelegate {
     
     // MARK: - Constants
-    private let ShowWebViewSegueIdentifier = "ShowWebView"
+    
+    private let showWebViewSegueIdentifier = "ShowWebView"
     
     // MARK: - Private Properties
+    
     private let oauth2Service = OAuth2Service.shared
     private let storage = OAuth2TokenStorage()
     
     // MARK: - Public Properties
+    
     weak var delegate: AuthViewControllerDelegate?
     
     // MARK: - Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
     
     // MARK: - Navigation
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == ShowWebViewSegueIdentifier {
-            guard let webViewViewController = segue.destination as? WebViewViewController else {
-                fatalError("Failed to prepare for \(ShowWebViewSegueIdentifier)")
+        if segue.identifier == showWebViewSegueIdentifier {
+            guard
+                let webViewViewController = segue.destination as? WebViewViewController
+            else {
+                assertionFailure("Failed to prepare for \(showWebViewSegueIdentifier)")
+                return
             }
+            let authHelper = AuthHelper()
+            let webViewPresenter = WebViewPresenter(authHelper: authHelper)
+            webViewViewController.presenter = webViewPresenter
+            webViewPresenter.view = webViewViewController
             webViewViewController.delegate = self
         } else {
             super.prepare(for: segue, sender: sender)
@@ -44,6 +56,7 @@ final class AuthViewController: UIViewController, WebViewViewControllerDelegate 
     }
     
     // MARK: - Private Methods
+    
     private func showAlert(in viewController: UIViewController) {
         let alert = UIAlertController(title: "Что-то пошло не так(", message: "Не удалось войти в систему", preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: "OK", style: .default, handler: nil))
@@ -51,6 +64,7 @@ final class AuthViewController: UIViewController, WebViewViewControllerDelegate 
     }
     
     // MARK: - WebViewViewControllerDelegate
+    
     func webViewViewController(_ vc: WebViewViewController, didAuthenticateWithCode code: String) {
         UIBlockingProgressHUD.show()
         delegate?.authViewController(self, didAuthenticateWithCode: code)
@@ -65,9 +79,9 @@ final class AuthViewController: UIViewController, WebViewViewControllerDelegate 
                     self.storage.token = token
                     print("AuthViewController: Успешно авторизован: \(token)")
                     self.dismiss(animated: true) { [weak self] in
-                                        guard let self = self else { return }
-                                        self.delegate?.didAuthenticate(self)
-                                    }
+                        guard let self = self else { return }
+                        self.delegate?.didAuthenticate(self)
+                    }
                 case .failure(let error):
                     print("AuthViewController Ошибка авторизации: \(error)")
                     self.showAlert(in: self)
