@@ -28,14 +28,14 @@ class Image_FeedUITests: XCTestCase {
        let emailTextField = webViewContainer.textFields["Email address"]
        XCTAssertTrue(emailTextField.waitForExistence(timeout: 5), "Поле email не найдено")
        emailTextField.tap()
-        emailTextField.typeText("") // TO-DO: Вписать свой логин
+        emailTextField.typeText("YUOR LOGIN HERE") // TO-DO: Вписать свой логин
        webViewContainer.swipeUp()
        sleep(2)
        
        let passwordTextField = webViewContainer.secureTextFields["Password"]
        XCTAssertTrue(passwordTextField.waitForExistence(timeout: 3), "Поле пароля не найдено")
        passwordTextField.tap()
-       passwordTextField.typeText("") // TO-DO: Вписать свой пароль
+       passwordTextField.typeText("YOUR PASS HERE") // TO-DO: Вписать свой пароль
        webViewContainer.swipeUp()
        sleep(2)
     
