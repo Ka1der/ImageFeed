@@ -14,14 +14,14 @@ final class ImagesListCell: UITableViewCell {
     @IBOutlet var dateLabel: UILabel!
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-           super.init(style: style, reuseIdentifier: reuseIdentifier)
-           selectionStyle = .none
-       }
-       
-       required init?(coder: NSCoder) {
-           super.init(coder: coder)
-           selectionStyle = .none
-       }
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
+        selectionStyle = .none
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        selectionStyle = .none
+    }
     
     override func prepareForReuse() {
         super.prepareForReuse()
@@ -41,17 +41,15 @@ final class ImagesListCell: UITableViewCell {
         likeButton.setImage(likeImage, for: .normal)
         
         likeButton.accessibilityIdentifier = "likeButton"
-           likeButton.accessibilityValue = isLiked ? "liked" : "unliked"
+        likeButton.accessibilityValue = isLiked ? "liked" : "unliked"
     }
     
     override func layoutSubviews() {
-            super.layoutSubviews()
-            
-            // Обеспечиваем минимальный размер области касания
-            if likeButton.frame.width < 44 {
-                let x = likeButton.frame.origin.x
-                let y = likeButton.frame.origin.y
-                likeButton.frame = CGRect(x: x, y: y, width: 44, height: 44)
-            }
+        super.layoutSubviews()
+        if likeButton.frame.width < 44 {
+            let x = likeButton.frame.origin.x
+            let y = likeButton.frame.origin.y
+            likeButton.frame = CGRect(x: x, y: y, width: 44, height: 44)
         }
+    }
 }

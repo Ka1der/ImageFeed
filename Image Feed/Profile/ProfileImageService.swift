@@ -11,10 +11,12 @@ import UIKit
 final class ProfileImageService {
     
     // MARK: - Singleton
+    
     static let shared = ProfileImageService()
     private init() {}
     
     // MARK: - Private Properties
+    
     private(set) var avatarURL: String?
     private var task: URLSessionTask?
     deinit {
@@ -31,9 +33,11 @@ final class ProfileImageService {
     
     
     // MARK: - Public Properties
+    
     static let didChangeNotification = Notification.Name(rawValue: "ProfileImageService.didChangeNotification")
     
     // MARK: - Public Methods
+    
     func makeAvatarRequest(username: String) -> URLRequest? {
         guard let url = URL(string: "users/\(username)", relativeTo: Constants.defaultBaseURL)
         else {

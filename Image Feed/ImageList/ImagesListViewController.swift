@@ -22,15 +22,10 @@ final class ImagesListViewController: UIViewController & ImageListViewController
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         configureTableView()
-        
-        // Инициализация презентера
         let presenter = ImageListPresenter()
         self.presenter = presenter
         presenter.view = self
-        
-        // Загрузка данных
         presenter.viewDidLoad()
     }
     
@@ -51,21 +46,15 @@ final class ImagesListViewController: UIViewController & ImageListViewController
     // MARK: - ImageListViewControllerProtocol
     
     func updateTableViewAnimated(withPhotos newPhotos: [Photo]) {
-        // Сначала обновляем данные
         let oldCount = photos.count
         photos.append(contentsOf: newPhotos)
         
-        // Затем обновляем UI
         if oldCount == 0 {
-            // Если это первая загрузка, просто перезагружаем таблицу
             tableView.reloadData()
         } else {
-            // Для последующих обновлений используем анимацию
             let indexPaths = (oldCount..<photos.count).map {
                 IndexPath(row: $0, section: 0)
             }
-            
-            // Используем beginUpdates/endUpdates для безопасного обновления
             tableView.beginUpdates()
             tableView.insertRows(at: indexPaths, with: .automatic)
             tableView.endUpdates()

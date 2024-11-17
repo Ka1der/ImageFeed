@@ -15,7 +15,7 @@ protocol AuthHelperProtocol {
 
 final class AuthHelper: AuthHelperProtocol {
     let configuration: AuthConfiguration
-
+    
     init(configuration: AuthConfiguration = .standard) {
         self.configuration = configuration
     }
@@ -25,7 +25,7 @@ final class AuthHelper: AuthHelperProtocol {
         
         return URLRequest(url: url)
     }
-
+    
     func authURL() -> URL? {
         guard var urlComponents = URLComponents(string: configuration.authURLString) else {
             return nil

@@ -125,13 +125,13 @@ final class ProfileViewController: UIViewController & ProfileViewControllerProto
         let noAction = UIAlertAction(title: "Нет", style: .cancel)
         
         yesAction.setValue(UIColor(named: "YPBlue"), forKey: "titleTextColor")
-           noAction.setValue(UIColor(named: "YPBlue"), forKey: "titleTextColor")
+        noAction.setValue(UIColor(named: "YPBlue"), forKey: "titleTextColor")
         
         alert.addAction(yesAction)
         alert.addAction(noAction)
         present(alert, animated: true)
     }
-
+    
     // MARK: - Setup Constrains
     
     private func setupConstraints() {

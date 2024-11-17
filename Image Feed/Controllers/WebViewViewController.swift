@@ -19,10 +19,12 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
     var presenter: WebViewPresenterProtocol?
     
     // MARK: - IBOutlets
+    
     @IBOutlet var webView: WKWebView!
     @IBOutlet var progressView: UIProgressView!
     
     // MARK: - Properties
+    
     weak var delegate: WebViewViewControllerDelegate?
     private var estimatedProgressObservation: NSKeyValueObservation?
     deinit {
@@ -33,6 +35,7 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
     
     
     // MARK: - Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -63,6 +66,7 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
         }
     
     // MARK: - IBActions
+    
     @IBAction private func didTapBackButton(_ sender: Any?) {
         delegate?.webViewViewControllerDidCancel(self)
     }
@@ -87,6 +91,7 @@ final class WebViewViewController: UIViewController & WebViewViewControllerProto
 }
 
 // MARK: - WKNavigationDelegate
+
 extension WebViewViewController: WKNavigationDelegate {
     func webView(
         _ webView: WKWebView,

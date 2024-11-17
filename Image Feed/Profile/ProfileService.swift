@@ -10,17 +10,19 @@ import Foundation
 final class ProfileService {
     
     // MARK: - Singleton
-    static let shared = ProfileService()
     
+    static let shared = ProfileService()
     private init() {}
     
     // MARK: - Private Properties
+    
     private let urlSession = URLSession.shared
     private var task: URLSessionTask?
     private var lastToken: String?
     private(set) var profile: ProfileModels.Profile?
     
     // MARK: - Public Methods
+    
     func fetchProfile(_ token: String, completion: @escaping (Result<ProfileModels.Profile, Error>) -> Void) {
         assert(Thread.isMainThread)
         task?.cancel()
@@ -31,9 +33,7 @@ final class ProfileService {
         }
         
         let task = urlSession.objectTask(for: request) { [weak self] (result: Result<ProfileModels.ProfileResult, Error>) in
-           
             guard self != nil else { return }
-            
             switch result {
             case .success(let profileResult):
                 print("ProfileService: Успешно получен профиль") // Лог
@@ -57,7 +57,7 @@ final class ProfileService {
     
     // MARK: - Private Methods
     
- private func makeRequest(token: String) -> URLRequest? {
+    private func makeRequest(token: String) -> URLRequest? {
         guard let url = URL(string: "me", relativeTo: Constants.defaultBaseURL)
         else {
             print ("ProfileService: неправильный URL")

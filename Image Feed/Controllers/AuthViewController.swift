@@ -9,24 +9,28 @@ import UIKit
 import ProgressHUD
 
 // MARK: - Protocols
+
 protocol AuthViewControllerDelegate: AnyObject {
     func authViewController(_ vc: AuthViewController, didAuthenticateWithCode code: String)
     func didAuthenticate(_ vc: AuthViewController)
 }
-
 final class AuthViewController: UIViewController, WebViewViewControllerDelegate {
     
     // MARK: - Constants
+    
     private let showWebViewSegueIdentifier = "ShowWebView"
     
     // MARK: - Private Properties
+    
     private let oauth2Service = OAuth2Service.shared
     private let storage = OAuth2TokenStorage()
     
     // MARK: - Public Properties
+    
     weak var delegate: AuthViewControllerDelegate?
     
     // MARK: - Lifecycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
     }
@@ -75,9 +79,9 @@ final class AuthViewController: UIViewController, WebViewViewControllerDelegate 
                     self.storage.token = token
                     print("AuthViewController: Успешно авторизован: \(token)")
                     self.dismiss(animated: true) { [weak self] in
-                                        guard let self = self else { return }
-                                        self.delegate?.didAuthenticate(self)
-                                    }
+                        guard let self = self else { return }
+                        self.delegate?.didAuthenticate(self)
+                    }
                 case .failure(let error):
                     print("AuthViewController Ошибка авторизации: \(error)")
                     self.showAlert(in: self)
