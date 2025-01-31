@@ -76,6 +76,7 @@ final class SingleImageViewController: UIViewController {
                     self.rescaleAndCenterImageInScrollView(image: imageResult.image)
                 case .failure(let error):
                     self.showError()
+                    print("\(#file):\(#line)] \(#function) Ошибка загрузки изображения: \(error)")
                 }
             }
     }

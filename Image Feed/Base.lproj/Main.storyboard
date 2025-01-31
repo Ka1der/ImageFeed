@@ -41,6 +41,7 @@
                                                 </imageView>
                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sdE-8c-JJO" userLabel="Like Button">
                                                     <rect key="frame" x="333" y="4" width="44" height="44"/>
+                                                    <accessibility key="accessibilityConfiguration" hint="Tap to like or unlike" identifier="LikeButton" label="Like Button"/>
                                                     <constraints>
                                                         <constraint firstAttribute="height" constant="44" id="TdL-nv-CnJ"/>
                                                         <constraint firstAttribute="width" constant="44" id="ldh-lZ-Nav"/>
@@ -129,6 +130,7 @@
                             </scrollView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="aSl-GQ-yti">
                                 <rect key="frame" x="8" y="11" width="48" height="48"/>
+                                <accessibility key="accessibilityConfiguration" hint="BackButton" identifier="BackButton" label="BackButton"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="9yv-UV-BqQ"/>
                                     <constraint firstAttribute="width" constant="48" id="fnb-Sf-6l9"/>
@@ -185,6 +187,7 @@
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="kmu-MO-KRn">
                                 <rect key="frame" x="25" y="699" width="343" height="48"/>
+                                <accessibility key="accessibilityConfiguration" identifier="Authenticate"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="48" id="OIw-Ru-eS8"/>
                                     <constraint firstAttribute="width" constant="343" id="UGs-2p-lq0"/>
@@ -280,7 +283,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="r2W-Ve-dCo"/>
                     <connections>
-                        <outlet property="UIProgressView" destination="U9T-O6-d7N" id="J0i-fj-yiB"/>
+                        <outlet property="progressView" destination="U9T-O6-d7N" id="pn4-bJ-QOp"/>
                         <outlet property="webView" destination="ocN-EQ-47I" id="zzo-oL-TFZ"/>
                     </connections>
                 </viewController>
