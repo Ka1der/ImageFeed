@@ -40,8 +40,6 @@ MovieQuiz - это приложение с квизами о фильмах из
 - Элементы интерфейса адаптируются под разрешения экранов iPhone, начиная с X — вёрстка под SE и iPad не предусмотрена;
 - Экраны соответствует макету — использованы верные шрифты нужных размеров, все надписи находятся на нужном месте, расположение всех элементов, размеры кнопок и отступы — точно такие же, как в макете.
 
-- https://github.com/yandex-practicum-ios/MovieQuiz-ios-requirements/blob/main/Resources/demo.gif
+| <img src="https://github.com/yandex-practicum-ios/MovieQuiz-ios-requirements/blob/main/Resources/demo.gif" alt="MovieQuiz Demo" width="200" /> | **Key Features:**<br>- Quiz questions<br>- Score tracking<br>- Fun animations |
+|:---:|:---|
 
-
-
-![demo](./Resources/demo.gif)
