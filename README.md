@@ -152,20 +152,4 @@
     3. При нажатии на кнопку Лайк пользователь может удалить изображение из избранного. В основной ленте лайк тоже удалится;
     4. Пользователь может просмотреть изображение на весь экран;
 
-<table>
-  <tr>
-    <td><img src="https://github.com/Ka1der/ImageFeed/blob/main/ImageFeedDemo.gif" alt="ImageFeed Demo" width="200" /></td>
-    <td>
-      <ul>
-        <li>Основные функции:</li>
-        <li>Безопасная аутентификация через OAuth 2.0.</li>
-        <li>Эффективная загрузка и кэширование изображений.</li>
-        <li>Многоэкранная навигация с плавными переходами.</li>
-        <li>Технологии: UIKit, RESTful API, GCD, OAuth 2.0, UITableView, ScrollView, WKWebView, Unit Tests, UI Tests.</li>
-        <li><a href="https://github.com/Ka1der/ImageFeed" target="_blank"> ImageFeed GitHub repository</a></li>
-      </ul>
-    </td>
-  </tr>
-</table>
-
----
+<img src="https://github.com/Ka1der/ImageFeed/blob/main/ImageFeed%20Demo.png" alt="ImageFeed Demo" width="200" />
